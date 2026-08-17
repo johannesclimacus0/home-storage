@@ -18,6 +18,7 @@
         "@laravel/multiplex": "^0.4.1"
     },
     "dependencies": {
+        "axios": "^1.19.0",
         "vue": "^3.5.41",
         "vue-router": "^5.2.0"
     }
