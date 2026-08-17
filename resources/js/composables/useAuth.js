@@ -4,6 +4,7 @@ import http from '../lib/http.js'
 const user = ref(null);
 const loading = ref(false);
 const authError = ref(null);
+const initialized = ref(false)
 
 async function fetchUser() {
     loading.value = true;
@@ -21,6 +22,7 @@ async function fetchUser() {
         }
     } finally {
         loading.value = false;
+        initialized.value = true
     }
 }
 
@@ -37,6 +39,13 @@ async function logout() {
     user.value = null;
 }
 
+async function initializeAuth(){
+    if(initialized.value){
+        return;
+    }
+    await fetchUser();
+}
+
 export function useAuth() {
     return {
         user,
@@ -44,6 +53,8 @@ export function useAuth() {
         authError,
         fetchUser,
         login,
-        logout
+        logout,
+        initialized,
+        initializeAuth,
     }
 }
