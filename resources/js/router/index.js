@@ -59,7 +59,7 @@ router.beforeEach(async (to) => {
     if (to.meta.guestOnly && user.value) {
         return {
             name: user.value.email_verified_at
-                ? 'dashboard'
+                    ? 'dashboard'
                 : 'verify-email',
         };
     }
