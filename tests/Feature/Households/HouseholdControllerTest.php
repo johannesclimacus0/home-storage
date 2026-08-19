@@ -144,7 +144,6 @@ class HouseholdControllerTest extends TestCase
         );
 
         $response->assertForbidden();
-        $response->assertJsonPath('message', 'Only the household owner can add members.');
         $this->assertDatabaseMissing('household_memberships', [
             'household_id' => $household->id,
             'user_id' => $someone->id,
@@ -335,9 +334,6 @@ class HouseholdControllerTest extends TestCase
         );
 
         $response->assertForbidden();
-        $response->assertJsonPath(
-            'message', 'The current user is not the household owner.'
-        );
         $this->assertDatabaseHas('household_memberships', [
             'household_id' => $household->id,
             'user_id' => $owner->id,

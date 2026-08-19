@@ -10,33 +10,34 @@ use App\Actions\Inventory\UpdateHouseholdProductAction;
 use App\DTO\Inventory\AddProductToHouseholdData;
 use App\DTO\Inventory\UpdateHouseholdProductData;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Inventory\ManageHouseholdInventoryRequest;
 use App\Http\Requests\Inventory\StoreHouseholdProductRequest;
 use App\Http\Requests\Inventory\UpdateHouseholdProductRequest;
 use App\Http\Resources\HouseholdProductResource;
+use App\Models\Household;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 final class HouseholdProductController extends Controller
 {
     public function index(
-        Request $request,
-        string $household,
+        ManageHouseholdInventoryRequest $request,
+        Household $household,
         ListHouseholdProductsAction $action,
     ): AnonymousResourceCollection {
         return HouseholdProductResource::collection(
-            $action->handle($household, $request->user()->getKey()),
+            $action->handle($household->uuid, $request->user()->getKey()),
         );
     }
 
     public function store(
         StoreHouseholdProductRequest $request,
-        string $household,
+        Household $household,
         AddProductToHouseholdAction $action,
     ): JsonResponse {
         $result = $action->handle(new AddProductToHouseholdData(
-            householdUuid: $household,
+            householdUuid: $household->uuid,
             actorUserId: $request->user()->getKey(),
             productUuid: $request->validated('product_uuid'),
             lowStockThreshold: $request->validated('low_stock_threshold'),
@@ -54,25 +55,25 @@ final class HouseholdProductController extends Controller
     }
 
     public function show(
-        Request $request,
-        string $household,
+        ManageHouseholdInventoryRequest $request,
+        Household $household,
         string $product,
         ShowHouseholdProductAction $action
     ): HouseholdProductResource {
         return new HouseholdProductResource(
-            $action->handle($household, $request->user()->getKey(), $product),
+            $action->handle($household->uuid, $request->user()->getKey(), $product),
         );
     }
 
     public function update(
         UpdateHouseholdProductRequest $request,
-        string $household,
+        Household $household,
         string $product,
         UpdateHouseholdProductAction $action,
     ): HouseholdProductResource {
         return new HouseholdProductResource($action->handle(
             new UpdateHouseholdProductData(
-                householdUuid: $household,
+                householdUuid: $household->uuid,
                 actorUserId: $request->user()->getKey(),
                 productUuid: $product,
                 lowStockThreshold: $request->validated('low_stock_threshold'),
@@ -81,12 +82,12 @@ final class HouseholdProductController extends Controller
     }
 
     public function destroy(
-        Request $request,
-        string $household,
+        ManageHouseholdInventoryRequest $request,
+        Household $household,
         string $product,
         RemoveProductFromHouseholdAction $action
     ): Response {
-        $action->handle($household, $request->user()->getKey(), $product);
+        $action->handle($household->uuid, $request->user()->getKey(), $product);
 
         return response()->noContent();
     }

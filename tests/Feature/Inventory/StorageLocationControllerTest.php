@@ -70,7 +70,7 @@ class StorageLocationControllerTest extends TestCase
         $this->actingAs($outsider)->postJson(
             "/api/households/{$household->uuid}/storage-locations",
             ['name' => 'Fridge'],
-        )->assertNotFound();
+        )->assertForbidden();
 
         $this->assertDatabaseCount('storage_locations', 0);
     }

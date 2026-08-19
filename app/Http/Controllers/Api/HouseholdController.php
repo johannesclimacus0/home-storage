@@ -16,6 +16,7 @@ use App\Http\Requests\Households\StoreHouseholdRequest;
 use App\Http\Requests\Households\TransferHouseholdOwnershipRequest;
 use App\Http\Resources\HouseholdMembershipResource;
 use App\Http\Resources\HouseholdResource;
+use App\Models\Household;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -44,11 +45,11 @@ class HouseholdController extends Controller
 
     public function storeMember(
         StoreHouseholdMemberRequest $request,
-        string $household,
-        AddHouseholdMemberAction $action
+        Household $household,
+        AddHouseholdMemberAction $action,
     ): JsonResponse {
         $result = $action->handle(new AddHouseholdMemberData(
-            uuid: $household,
+            uuid: $household->uuid,
             actorUserId: $request->user()->getKey(),
             newMemberEmail: $request->validated('email'),
         ));
@@ -64,11 +65,11 @@ class HouseholdController extends Controller
 
     public function transferOwnership(
         TransferHouseholdOwnershipRequest $request,
-        string $household,
+        Household $household,
         TransferHouseholdOwnershipAction $action
     ): JsonResponse {
         $result = $action->handle(new TransferHouseholdOwnershipData(
-            uuid: $household,
+            uuid: $household->uuid,
             currentOwnerUserId: $request->user()->getKey(),
             newOwnerUserId: $request->integer('new_owner_user_id'),
         ));

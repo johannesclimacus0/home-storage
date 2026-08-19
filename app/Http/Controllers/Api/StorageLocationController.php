@@ -7,6 +7,7 @@ use App\DTO\Inventory\CreateStorageLocationData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\StoreStorageLocationRequest;
 use App\Http\Resources\StorageLocationResource;
+use App\Models\Household;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,11 +15,11 @@ class StorageLocationController extends Controller
 {
     public function store(
         StoreStorageLocationRequest $request,
-        string $household,
+        Household $household,
         CreateStorageLocationAction $action,
     ): JsonResponse {
         $data = new CreateStorageLocationData(
-            householdUuid: $household,
+            householdUuid: $household->uuid,
             actorUserId: $request->user()->getKey(),
             name: $request->validated('name'),
         );

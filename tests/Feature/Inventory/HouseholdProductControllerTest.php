@@ -163,13 +163,13 @@ class HouseholdProductControllerTest extends TestCase
 
         $this->actingAs($outsider)
             ->getJson("/api/households/{$household->uuid}/products")
-            ->assertNotFound();
+            ->assertForbidden();
 
         $this->actingAs($outsider)
             ->deleteJson(
                 "/api/households/{$household->uuid}/products/{$householdProduct->product->uuid}",
             )
-            ->assertNotFound();
+            ->assertForbidden();
 
         $this->assertDatabaseHas('household_products', ['id' => $householdProduct->id]);
     }

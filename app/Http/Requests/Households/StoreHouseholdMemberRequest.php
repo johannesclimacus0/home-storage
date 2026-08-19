@@ -2,24 +2,19 @@
 
 namespace App\Http\Requests\Households;
 
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Models\Household;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreHouseholdMemberRequest extends FormRequest
+final class StoreHouseholdMemberRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        $household = $this->route('household');
+
+        return $household instanceof Household
+            && $this->user()->can('addMember', $household);
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
