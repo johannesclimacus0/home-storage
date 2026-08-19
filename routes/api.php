@@ -12,20 +12,17 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::post('/households', [HouseholdController::class, 'store']);
+    Route::apiResource('households', HouseholdController::class)
+        ->only(['index', 'store']);
+
     Route::post('/households/{household}/members', [HouseholdController::class, 'storeMember']);
     Route::patch('/households/{household}/owner', [HouseholdController::class, 'transferOwnership']);
-    Route::get('/households', [HouseholdController::class, 'index']);
-    Route::post('/households/{household}/storage-locations', [StorageLocationController::class, 'store']);
-    Route::get('/households/{household}/storage-locations', [StorageLocationController::class, 'index']);
-    Route::get('/households/{household}/storage-locations/{storageLocation}', [StorageLocationController::class, 'show']);
-    Route::patch('/households/{household}/storage-locations/{storageLocation}', [StorageLocationController::class, 'update']);
-    Route::delete('/households/{household}/storage-locations/{storageLocation}', [StorageLocationController::class, 'destroy']);
-    Route::get('/households/{household}/products', [HouseholdProductController::class, 'index']);
-    Route::post('/households/{household}/products', [HouseholdProductController::class, 'store']);
-    Route::get('/households/{household}/products/{product}', [HouseholdProductController::class, 'show']);
-    Route::patch('/households/{household}/products/{product}', [HouseholdProductController::class, 'update']);
-    Route::delete('/households/{household}/products/{product}', [HouseholdProductController::class, 'destroy']);
+
+    Route::apiResource('households.storage-locations', StorageLocationController::class)
+        ->parameters(['storage-locations' => 'storageLocation']);
+
+    Route::apiResource('households.products', HouseholdProductController::class);
+
     Route::post('/households/{household}/products/{product}/stocks', [StockController::class, 'store']);
     Route::post('/households/{household}/products/{product}/consume', [StockController::class, 'consume']);
 });
