@@ -7,6 +7,7 @@ use App\Exceptions\Inventory\InsufficientStock;
 use App\Exceptions\Inventory\InvalidLowStockThreshold;
 use App\Exceptions\Inventory\InvalidStockQuantity;
 use App\Exceptions\Inventory\StorageLocationConflict;
+use App\Exceptions\Products\ProductConflict;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -42,6 +43,12 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (HouseholdProductConflict $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 409);
+        });
+
+        $exceptions->render(function (ProductConflict $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
             ], 409);
