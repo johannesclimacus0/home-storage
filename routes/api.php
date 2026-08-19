@@ -17,6 +17,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::patch('/households/{household}/owner', [HouseholdController::class, 'transferOwnership']);
     Route::get('/households', [HouseholdController::class, 'index']);
     Route::post('/households/{household}/storage-locations', [StorageLocationController::class, 'store']);
+    Route::get('/households/{household}/storage-locations', [StorageLocationController::class, 'index']);
+    Route::get('/households/{household}/storage-locations/{storageLocation}', [StorageLocationController::class, 'show']);
+    Route::patch('/households/{household}/storage-locations/{storageLocation}', [StorageLocationController::class, 'update']);
+    Route::delete('/households/{household}/storage-locations/{storageLocation}', [StorageLocationController::class, 'destroy']);
     Route::get('/households/{household}/products', [HouseholdProductController::class, 'index']);
     Route::post('/households/{household}/products', [HouseholdProductController::class, 'store']);
     Route::get('/households/{household}/products/{product}', [HouseholdProductController::class, 'show']);

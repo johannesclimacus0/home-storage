@@ -12,11 +12,15 @@ use Illuminate\Database\Eloquent\Collection;
 
 final class EloquentInventoryRepository implements InventoryRepository
 {
-    public function storageLocationExists(Household $household, string $name): bool
-    {
+    public function storageLocationExists(
+        Household $household,
+        string $name,
+        ?StorageLocation $ignore = null,
+    ): bool {
         return StorageLocation::query()
             ->where('name', $name)
             ->where('household_id', $household->getKey())
+            ->when($ignore, fn ($query) => $query->whereKeyNot($ignore->getKey()))
             ->exists();
     }
 
@@ -25,6 +29,41 @@ final class EloquentInventoryRepository implements InventoryRepository
         return $household->storageLocations()->create([
             'name' => $name,
         ]);
+    }
+
+    /** @return Collection<int, StorageLocation> */
+    public function findStorageLocations(Household $household): Collection
+    {
+        return StorageLocation::query()
+            ->where('household_id', $household->getKey())
+            ->with('household')
+            ->orderBy('name')
+            ->get();
+    }
+
+    public function findStorageLocation(Household $household, string $locationUuid): StorageLocation {
+        return StorageLocation::query()
+            ->where('household_id', $household->getKey())
+            ->where('uuid', $locationUuid)
+            ->with('household')
+            ->firstOrFail();
+    }
+
+    public function updateStorageLocation(StorageLocation $storageLocation, string $name): void
+    {
+        $storageLocation->updateOrFail(['name' => $name]);
+    }
+
+    public function storageLocationHasStock(StorageLocation $storageLocation): bool
+    {
+        return $storageLocation->stocks()
+            ->where('quantity', '>', 0)
+            ->exists();
+    }
+
+    public function deleteStorageLocation(StorageLocation $storageLocation): void
+    {
+        $storageLocation->deleteOrFail();
     }
 
     public function findProductByUuid(string $uuid): Product

@@ -11,9 +11,27 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface InventoryRepository
 {
-    public function storageLocationExists(Household $household, string $name): bool;
+    public function storageLocationExists(
+        Household $household,
+        string $name,
+        ?StorageLocation $ignore = null,
+    ): bool;
 
     public function createStorageLocation(Household $household, string $name): StorageLocation;
+
+    /** @return Collection<int, StorageLocation> */
+    public function findStorageLocations(Household $household): Collection;
+
+    public function findStorageLocation(
+        Household $household,
+        string $locationUuid
+    ): StorageLocation;
+
+    public function updateStorageLocation(StorageLocation $storageLocation, string $name): void;
+
+    public function storageLocationHasStock(StorageLocation $storageLocation): bool;
+
+    public function deleteStorageLocation(StorageLocation $storageLocation): void;
 
     public function findProductByUuid(string $uuid): Product;
 
