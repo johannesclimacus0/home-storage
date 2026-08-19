@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Password;
@@ -40,7 +39,7 @@ class PasswordResetTest extends TestCase
         $oldPassword = 'old-password';
         $newPassword = 'new-password';
 
-        $user = User::factory()->create(['password' => $oldPassword,]);
+        $user = User::factory()->create(['password' => $oldPassword]);
 
         $token = Password::createToken($user);
 

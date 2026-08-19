@@ -22,6 +22,7 @@ class LoginTest extends TestCase
         $response->assertOk();
         $this->assertAuthenticatedAs($user);
     }
+
     public function test_user_cannot_login_with_invalid_password(): void
     {
         $user = User::factory()->create(['password' => 'password']);
@@ -40,7 +41,7 @@ class LoginTest extends TestCase
     {
         $this->actingAs(User::factory()->create())
             ->postJson('/logout')
-            ->assertNoContent();;
+            ->assertNoContent();
 
         $this->assertGuest();
     }

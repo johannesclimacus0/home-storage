@@ -6,14 +6,13 @@ use App\Contracts\Households\HouseholdRepository;
 use App\DTO\Households\AddHouseholdMemberData;
 use App\DTO\Households\AddHouseholdMemberResult;
 use App\Enums\HouseholdRole;
-use DomainException;
+use App\Exceptions\Households\HouseholdAccessDenied;
+use App\Exceptions\Households\HouseholdMembershipConflict;
 use Illuminate\Support\Facades\DB;
 
 final readonly class AddHouseholdMemberAction
 {
-    public function __construct(private HouseholdRepository $households)
-    {
-    }
+    public function __construct(private HouseholdRepository $households) {}
 
     public function handle(AddHouseholdMemberData $data): AddHouseholdMemberResult
     {
@@ -26,7 +25,7 @@ final readonly class AddHouseholdMemberAction
             );
 
             if ($owner->role !== HouseholdRole::Owner) {
-                throw new DomainException('Only the household owner can add members.');
+                throw new HouseholdAccessDenied('Only the household owner can add members.');
             }
 
             $user = $this->households->findUserByEmail(
@@ -34,11 +33,11 @@ final readonly class AddHouseholdMemberAction
             );
 
             if ($user->getKey() === $data->actorUserId) {
-                throw new DomainException('The owner is already a household member.');
+                throw new HouseholdMembershipConflict('The owner is already a household member.');
             }
 
             if ($this->households->membershipExists($household, $user->getKey())) {
-                throw new DomainException('The user is already a household member.');
+                throw new HouseholdMembershipConflict('The user is already a household member.');
             }
 
             $newMembership = $this->households->addMember(

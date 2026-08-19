@@ -31,7 +31,6 @@ class RegistrationTest extends TestCase
 
         $response->assertCreated();
 
-
         $user = User::query()
             ->where('email', 'test@example.org')
             ->firstOrFail();
@@ -45,7 +44,6 @@ class RegistrationTest extends TestCase
         $this->assertTrue(Hash::check('password', $user->password));
         Notification::assertSentTo([$user], VerifyEmail::class);
     }
-
 
     public function test_user_cannot_register_with_existing_email(): void
     {

@@ -6,6 +6,7 @@ use App\Enums\HouseholdRole;
 use App\Models\Household;
 use App\Models\HouseholdMembership;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 interface HouseholdRepository
 {
@@ -35,4 +36,9 @@ interface HouseholdRepository
         Household $household,
         int $userId,
     ): bool;
+
+    /**
+     * @return Collection<int, HouseholdMembership>
+     */
+    public function findMembershipsForUser(int $userId): Collection;
 }

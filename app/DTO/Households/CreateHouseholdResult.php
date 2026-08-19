@@ -10,7 +10,5 @@ final readonly class CreateHouseholdResult
         public string $uuid,
         public string $name,
         public HouseholdRole $role,
-    )
-    {
-    }
+    ) {}
 }

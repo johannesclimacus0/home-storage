@@ -6,19 +6,18 @@ use App\Contracts\Households\HouseholdRepository;
 use App\DTO\Households\TransferHouseholdOwnershipData;
 use App\DTO\Households\TransferHouseholdOwnershipResult;
 use App\Enums\HouseholdRole;
-use DomainException;
+use App\Exceptions\Households\HouseholdAccessDenied;
+use App\Exceptions\Households\HouseholdMembershipConflict;
 use Illuminate\Support\Facades\DB;
 
 final readonly class TransferHouseholdOwnershipAction
 {
-    public function __construct(private HouseholdRepository $households)
-    {
-    }
+    public function __construct(private HouseholdRepository $households) {}
 
     public function handle(TransferHouseholdOwnershipData $data): TransferHouseholdOwnershipResult
     {
         if ($data->currentOwnerUserId === $data->newOwnerUserId) {
-            throw new DomainException('The owner cannot transfer ownership to themselves.');
+            throw new HouseholdMembershipConflict('The owner cannot transfer ownership to themselves.');
         }
 
         return DB::transaction(function () use ($data): TransferHouseholdOwnershipResult {
@@ -35,11 +34,11 @@ final readonly class TransferHouseholdOwnershipAction
             );
 
             if ($owner->role !== HouseholdRole::Owner) {
-                throw new DomainException('The current user is not the household owner.');
+                throw new HouseholdAccessDenied('The current user is not the household owner.');
             }
 
             if ($newOwner->role !== HouseholdRole::Member) {
-                throw new DomainException('The new owner is not a household member.');
+                throw new HouseholdMembershipConflict('The new owner is not a household member.');
             }
 
             $this->households->changeRole($owner, HouseholdRole::Member);

@@ -4,6 +4,7 @@ namespace Tests\Feature\Households;
 
 use App\Actions\Households\AddHouseholdMemberAction;
 use App\Actions\Households\CreateHouseholdAction;
+use App\Actions\Households\ListUserHouseholdsAction;
 use App\Actions\Households\TransferHouseholdOwnershipAction;
 use App\DTO\Households\AddHouseholdMemberData;
 use App\DTO\Households\CreateHouseholdData;
@@ -13,8 +14,8 @@ use App\Models\Household;
 use App\Models\HouseholdMembership;
 use App\Models\User;
 use DomainException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class HouseholdActionsTest extends TestCase
@@ -389,5 +390,39 @@ class HouseholdActionsTest extends TestCase
                 ->where('user_id', $owner->id)
                 ->count(),
         );
+    }
+
+    public function test_user_can_list_only_their_household_memberships(): void
+    {
+        $user = User::factory()->create();
+        $anotherUser = User::factory()->create();
+        $ownedHousehold = Household::factory()->create();
+        $joinedHousehold = Household::factory()->create();
+        $foreignHousehold = Household::factory()->create();
+
+        HouseholdMembership::factory()->owner()->create([
+            'household_id' => $ownedHousehold->id,
+            'user_id' => $user->id,
+        ]);
+        HouseholdMembership::factory()->create([
+            'household_id' => $joinedHousehold->id,
+            'user_id' => $user->id,
+        ]);
+        HouseholdMembership::factory()->owner()->create([
+            'household_id' => $foreignHousehold->id,
+            'user_id' => $anotherUser->id,
+        ]);
+
+        $action = $this->app->make(ListUserHouseholdsAction::class);
+        $memberships = $action->handle($user->getKey());
+
+        $this->assertCount(2, $memberships);
+        $this->assertEqualsCanonicalizing(
+            [$ownedHousehold->id, $joinedHousehold->id],
+            $memberships->pluck('household_id')->all(),
+        );
+        $this->assertTrue($memberships->every(
+            fn (HouseholdMembership $membership) => $membership->relationLoaded('household'),
+        ));
     }
 }

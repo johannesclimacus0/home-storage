@@ -8,6 +8,5 @@ final readonly class AddHouseholdMemberData
         public string $uuid,
         public int $actorUserId,
         public string $newMemberEmail,
-    ) {
-    }
+    ) {}
 }

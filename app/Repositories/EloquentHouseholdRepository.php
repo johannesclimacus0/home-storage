@@ -7,6 +7,7 @@ use App\Enums\HouseholdRole;
 use App\Models\Household;
 use App\Models\HouseholdMembership;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 final class EloquentHouseholdRepository implements HouseholdRepository
 {
@@ -51,14 +52,12 @@ final class EloquentHouseholdRepository implements HouseholdRepository
             ->firstOrFail();
     }
 
-
     public function changeRole(HouseholdMembership $membership, HouseholdRole $role): void
     {
         $membership->updateOrFail([
             'role' => $role,
         ]);
     }
-
 
     public function findMembershipForUpdate(Household $household, int $userId): HouseholdMembership
     {
@@ -69,5 +68,15 @@ final class EloquentHouseholdRepository implements HouseholdRepository
             ->firstOrFail();
     }
 
-
+    /**
+     * @return Collection<int, HouseholdMembership>
+     */
+    public function findMembershipsForUser(int $userId): Collection
+    {
+        return HouseholdMembership::query()
+            ->where('user_id', $userId)
+            ->with('household')
+            ->latest()
+            ->get();
+    }
 }

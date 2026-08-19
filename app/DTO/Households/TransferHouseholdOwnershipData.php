@@ -8,7 +8,5 @@ final readonly class TransferHouseholdOwnershipData
         public string $uuid,
         public int $currentOwnerUserId,
         public int $newOwnerUserId,
-    )
-    {
-    }
+    ) {}
 }

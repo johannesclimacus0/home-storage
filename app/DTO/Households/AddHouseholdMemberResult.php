@@ -7,7 +7,5 @@ final readonly class AddHouseholdMemberResult
     public function __construct(
         public string $uuid,
         public int $newMemberUserId,
-    )
-    {
-    }
+    ) {}
 }
