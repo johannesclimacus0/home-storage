@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Models;
+
+use App\Traits\HasUuidRouteKey;
+use Database\Factories\StorageLocationFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+/**
+ * @property-read \App\Models\Household|null $household
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stock> $stocks
+ * @property-read int|null $stocks_count
+ * @method static \Database\Factories\StorageLocationFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StorageLocation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StorageLocation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StorageLocation query()
+ * @mixin \Eloquent
+ */
+#[Fillable(['household_id', 'name'])]
+class StorageLocation extends Model
+{
+    /** @use HasFactory<StorageLocationFactory> */
+    use HasFactory, HasUuidRouteKey;
+
+    public function household(): BelongsTo
+    {
+        return $this->belongsTo(Household::class);
+    }
+
+    public function stocks(): HasMany
+    {
+        return $this->hasMany(Stock::class);
+    }
+}

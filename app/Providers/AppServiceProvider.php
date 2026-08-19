@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Contracts\Households\HouseholdRepository;
+use App\Contracts\Inventory\InventoryRepository;
 use App\Repositories\EloquentHouseholdRepository;
+use App\Repositories\EloquentInventoryRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(HouseholdRepository::class, EloquentHouseholdRepository::class);
+        $this->app->bind(InventoryRepository::class, EloquentInventoryRepository::class);
     }
 
     /**

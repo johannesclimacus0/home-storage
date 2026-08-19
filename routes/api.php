@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\HouseholdController;
+use App\Http\Controllers\Api\StorageLocationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,4 +14,5 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/households/{household}/members', [HouseholdController::class, 'storeMember']);
     Route::patch('/households/{household}/owner', [HouseholdController::class, 'transferOwnership']);
     Route::get('/households', [HouseholdController::class, 'index']);
+    Route::post('/households/{household}/storage-locations', [StorageLocationController::class, 'store']);
 });

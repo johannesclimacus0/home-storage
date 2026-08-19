@@ -2,6 +2,7 @@
 
 use App\Exceptions\Households\HouseholdAccessDenied;
 use App\Exceptions\Households\HouseholdMembershipConflict;
+use App\Exceptions\Inventory\StorageLocationConflict;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -25,6 +26,12 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (HouseholdMembershipConflict $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 409);
+        });
+
+        $exceptions->render(function (StorageLocationConflict $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
             ], 409);
