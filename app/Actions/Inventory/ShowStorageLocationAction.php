@@ -13,7 +13,8 @@ final readonly class ShowStorageLocationAction
         private InventoryRepository $inventory,
     ) {}
 
-    public function handle(string $householdUuid, int $actorUserId, string $locationUuid): StorageLocation {
+    public function handle(string $householdUuid, int $actorUserId, string $locationUuid): StorageLocation
+    {
         $household = $this->households->findByUuid($householdUuid);
         $this->households->findMembership($household, $actorUserId);
 

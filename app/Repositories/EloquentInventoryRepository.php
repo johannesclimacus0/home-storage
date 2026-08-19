@@ -41,7 +41,8 @@ final class EloquentInventoryRepository implements InventoryRepository
             ->get();
     }
 
-    public function findStorageLocation(Household $household, string $locationUuid): StorageLocation {
+    public function findStorageLocation(Household $household, string $locationUuid): StorageLocation
+    {
         return StorageLocation::query()
             ->where('household_id', $household->getKey())
             ->where('uuid', $locationUuid)

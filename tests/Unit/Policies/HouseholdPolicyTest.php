@@ -23,6 +23,12 @@ class HouseholdPolicyTest extends TestCase
         $this->assertTrue($policy->transferOwnership($owner, $household));
         $this->assertFalse($policy->addMember($member, $household));
         $this->assertFalse($policy->transferOwnership($member, $household));
+        $this->assertTrue($policy->update($owner, $household));
+        $this->assertTrue($policy->delete($owner, $household));
+        $this->assertTrue($policy->removeMember($owner, $household));
+        $this->assertFalse($policy->update($member, $household));
+        $this->assertFalse($policy->delete($member, $household));
+        $this->assertFalse($policy->removeMember($member, $household));
     }
 
     public function test_every_member_can_manage_inventory_but_outsider_cannot(): void
@@ -34,6 +40,11 @@ class HouseholdPolicyTest extends TestCase
         $this->assertTrue($policy->manageInventory($owner, $household));
         $this->assertTrue($policy->manageInventory($member, $household));
         $this->assertFalse($policy->manageInventory($outsider, $household));
+        $this->assertTrue($policy->view($owner, $household));
+        $this->assertTrue($policy->view($member, $household));
+        $this->assertTrue($policy->leave($member, $household));
+        $this->assertFalse($policy->view($outsider, $household));
+        $this->assertFalse($policy->leave($outsider, $household));
     }
 
     private function householdWithRoles(): array

@@ -12,10 +12,12 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::apiResource('households', HouseholdController::class)
-        ->only(['index', 'store']);
+    Route::apiResource('households', HouseholdController::class);
 
+    Route::get('/households/{household}/members', [HouseholdController::class, 'members']);
     Route::post('/households/{household}/members', [HouseholdController::class, 'storeMember']);
+    Route::delete('/households/{household}/members/{member}', [HouseholdController::class, 'removeMember']);
+    Route::delete('/households/{household}/membership', [HouseholdController::class, 'leave']);
     Route::patch('/households/{household}/owner', [HouseholdController::class, 'transferOwnership']);
 
     Route::apiResource('households.storage-locations', StorageLocationController::class)

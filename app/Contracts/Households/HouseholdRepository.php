@@ -22,6 +22,8 @@ interface HouseholdRepository
 
     public function findByUuid(string $uuid): Household;
 
+    public function findByUuidWithMembers(string $uuid): Household;
+
     public function findMembershipForUpdate(
         Household $household,
         int $userId
@@ -48,4 +50,16 @@ interface HouseholdRepository
      * @return Collection<int, HouseholdMembership>
      */
     public function findMembershipsForUser(int $userId): Collection;
+
+    /** @return Collection<int, HouseholdMembership> */
+    public function findMembershipsForHouseholdForUpdate(Household $household): Collection;
+
+    /** @return Collection<int, HouseholdMembership> */
+    public function findMembershipsForHousehold(Household $household): Collection;
+
+    public function update(Household $household, string $name): void;
+
+    public function deleteMembership(HouseholdMembership $membership): void;
+
+    public function delete(Household $household): void;
 }
