@@ -17,8 +17,9 @@ use Illuminate\Support\Carbon;
  * @property HouseholdRole $role
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read \App\Models\Household $household
- * @property-read \App\Models\User $user
+ * @property-read Household $household
+ * @property-read User $user
+ *
  * @method static \Database\Factories\HouseholdMembershipFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership newQuery()
@@ -29,6 +30,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable(['household_id', 'user_id', 'role'])]

@@ -17,12 +17,13 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, \App\Models\HouseholdMembership> $householdMemberships
+ * @property-read Collection<int, HouseholdMembership> $householdMemberships
  * @property-read int|null $household_memberships_count
- * @property-read Collection<int, \App\Models\HouseholdProduct> $householdProducts
+ * @property-read Collection<int, HouseholdProduct> $householdProducts
  * @property-read int|null $household_products_count
- * @property-read Collection<int, \App\Models\StorageLocation> $storageLocations
+ * @property-read Collection<int, StorageLocation> $storageLocations
  * @property-read int|null $storage_locations_count
+ *
  * @method static \Database\Factories\HouseholdFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Household newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Household newQuery()
@@ -32,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Household whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Household whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Household whereUuid($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable(['name'])]

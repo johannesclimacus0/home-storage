@@ -52,6 +52,13 @@ final class EloquentHouseholdRepository implements HouseholdRepository
             ->firstOrFail();
     }
 
+    public function findByUuid(string $uuid): Household
+    {
+        return Household::query()
+            ->where('uuid', $uuid)
+            ->firstOrFail();
+    }
+
     public function changeRole(HouseholdMembership $membership, HouseholdRole $role): void
     {
         $membership->updateOrFail([
@@ -65,6 +72,14 @@ final class EloquentHouseholdRepository implements HouseholdRepository
             ->where('user_id', $userId)
             ->where('household_id', $household->getKey())
             ->lockForUpdate()
+            ->firstOrFail();
+    }
+
+    public function findMembership(Household $household, int $userId): HouseholdMembership
+    {
+        return HouseholdMembership::query()
+            ->where('user_id', $userId)
+            ->where('household_id', $household->getKey())
             ->firstOrFail();
     }
 

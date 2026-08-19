@@ -2,6 +2,10 @@
 
 use App\Exceptions\Households\HouseholdAccessDenied;
 use App\Exceptions\Households\HouseholdMembershipConflict;
+use App\Exceptions\Inventory\HouseholdProductConflict;
+use App\Exceptions\Inventory\InsufficientStock;
+use App\Exceptions\Inventory\InvalidLowStockThreshold;
+use App\Exceptions\Inventory\InvalidStockQuantity;
 use App\Exceptions\Inventory\StorageLocationConflict;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -35,6 +39,36 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json([
                 'message' => $exception->getMessage(),
             ], 409);
+        });
+
+        $exceptions->render(function (HouseholdProductConflict $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 409);
+        });
+
+        $exceptions->render(function (InsufficientStock $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 409);
+        });
+
+        $exceptions->render(function (InvalidLowStockThreshold $exception) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'low_stock_threshold' => [$exception->getMessage()],
+                ],
+            ], 422);
+        });
+
+        $exceptions->render(function (InvalidStockQuantity $exception) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    $exception->field => [$exception->getMessage()],
+                ],
+            ], 422);
         });
 
         $exceptions->shouldRenderJsonWhen(

@@ -2,15 +2,15 @@
 
 namespace App\Http\Requests\Inventory;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreStorageLocationRequest extends FormRequest
+final class StoreHouseholdProductRequest extends FormRequest
 {
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:3|max:255',
+            'product_uuid' => 'required|uuid',
+            'low_stock_threshold' => 'required|string|max:20',
         ];
     }
 }

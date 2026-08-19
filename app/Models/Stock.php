@@ -9,12 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * @property-read \App\Models\HouseholdProduct|null $householdProduct
- * @property-read \App\Models\StorageLocation|null $storageLocation
+ * @property-read HouseholdProduct|null $householdProduct
+ * @property-read StorageLocation|null $storageLocation
+ *
  * @method static \Database\Factories\StockFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stock newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stock newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Stock query()
+ *
  * @mixin \Eloquent
  */
 #[Fillable(['household_product_id', 'storage_location_id', 'quantity'])]

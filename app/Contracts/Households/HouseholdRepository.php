@@ -20,9 +20,16 @@ interface HouseholdRepository
 
     public function findByUuidForUpdate(string $uuid): Household;
 
+    public function findByUuid(string $uuid): Household;
+
     public function findMembershipForUpdate(
         Household $household,
         int $userId
+    ): HouseholdMembership;
+
+    public function findMembership(
+        Household $household,
+        int $userId,
     ): HouseholdMembership;
 
     public function changeRole(

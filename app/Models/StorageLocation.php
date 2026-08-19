@@ -5,19 +5,22 @@ namespace App\Models;
 use App\Traits\HasUuidRouteKey;
 use Database\Factories\StorageLocationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property-read \App\Models\Household|null $household
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Stock> $stocks
+ * @property-read Household|null $household
+ * @property-read Collection<int, Stock> $stocks
  * @property-read int|null $stocks_count
+ *
  * @method static \Database\Factories\StorageLocationFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StorageLocation newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StorageLocation newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StorageLocation query()
+ *
  * @mixin \Eloquent
  */
 #[Fillable(['household_id', 'name'])]
