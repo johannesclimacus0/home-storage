@@ -25,12 +25,9 @@ class Stock extends Model
     /** @use HasFactory<StockFactory> */
     use HasFactory;
 
-    protected function casts(): array
-    {
-        return [
-            'quantity' => 'decimal:3',
-        ];
-    }
+    protected $casts = [
+        'quantity' => 'decimal:3',
+    ];
 
     public function householdProduct(): BelongsTo
     {

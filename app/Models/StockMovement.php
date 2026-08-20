@@ -34,17 +34,14 @@ final class StockMovement extends Model
 
     use HasUuidRouteKey;
 
-    protected function casts(): array
-    {
-        return [
-            'type' => StockMovementType::class,
-            'input_unit' => MeasurementUnit::class,
-            'input_quantity' => 'decimal:3',
-            'quantity_delta' => 'decimal:3',
-            'quantity_before' => 'decimal:3',
-            'quantity_after' => 'decimal:3',
-        ];
-    }
+    protected $casts = [
+        'type' => StockMovementType::class,
+        'input_unit' => MeasurementUnit::class,
+        'input_quantity' => 'decimal:3',
+        'quantity_delta' => 'decimal:3',
+        'quantity_before' => 'decimal:3',
+        'quantity_after' => 'decimal:3',
+    ];
 
     public function household(): BelongsTo
     {

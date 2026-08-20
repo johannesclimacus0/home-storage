@@ -29,12 +29,10 @@ class HouseholdProduct extends Model
     /** @use HasFactory<HouseholdProductFactory> */
     use HasFactory;
 
-    protected function casts(): array
-    {
-        return [
-            'low_stock_threshold' => 'decimal:3',
-        ];
-    }
+    protected $casts = [
+        'low_stock_threshold' => 'decimal:3',
+        'low_stock_since' => 'immutable_datetime',
+    ];
 
     public function household(): BelongsTo
     {

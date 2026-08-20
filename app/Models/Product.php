@@ -29,12 +29,9 @@ class Product extends Model
     /** @use HasFactory<ProductFactory> */
     use HasFactory, HasUuidRouteKey;
 
-    protected function casts(): array
-    {
-        return [
-            'measurement_type' => MeasurementType::class,
-        ];
-    }
+    protected $casts = [
+        'measurement_type' => MeasurementType::class,
+    ];
 
     public function householdProducts(): HasMany
     {
