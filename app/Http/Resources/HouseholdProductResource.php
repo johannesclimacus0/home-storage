@@ -15,6 +15,8 @@ final class HouseholdProductResource extends JsonResource
             'measurement_type' => $this->product->measurement_type->value,
             'low_stock_threshold' => $this->low_stock_threshold,
             'total_quantity' => (string) ($this->stocks_sum_quantity ?? '0.000'),
+            'is_low_stock' => $this->low_stock_since !== null,
+            'low_stock_since' => $this->low_stock_since?->toISOString(),
         ];
     }
 }

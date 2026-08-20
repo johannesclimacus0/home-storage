@@ -7,6 +7,7 @@ use App\Models\HouseholdProduct;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\StorageLocation;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Tests\TestCase;
@@ -28,15 +29,17 @@ class InventoryModelsTest extends TestCase
     {
         $householdProduct = new HouseholdProduct;
         $householdProduct->setRawAttributes(['low_stock_threshold' => '1500']);
+        $householdProduct->low_stock_since = '2026-08-20 10:00:00';
 
         $this->assertSame(
-            ['household_id', 'product_id', 'low_stock_threshold'],
+            ['household_id', 'product_id', 'low_stock_threshold', 'low_stock_since'],
             $householdProduct->getFillable(),
         );
         $this->assertSame('1500.000', $householdProduct->low_stock_threshold);
         $this->assertInstanceOf(BelongsTo::class, $householdProduct->household());
         $this->assertInstanceOf(BelongsTo::class, $householdProduct->product());
         $this->assertInstanceOf(HasMany::class, $householdProduct->stocks());
+        $this->assertInstanceOf(CarbonImmutable::class, $householdProduct->low_stock_since);
     }
 
     public function test_storage_location_configuration_and_relationships(): void

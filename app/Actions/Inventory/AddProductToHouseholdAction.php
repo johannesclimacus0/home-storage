@@ -7,7 +7,9 @@ use App\Contracts\Inventory\InventoryRepository;
 use App\DTO\Inventory\AddProductToHouseholdData;
 use App\DTO\Inventory\AddProductToHouseholdResult;
 use App\Exceptions\Inventory\HouseholdProductConflict;
+use App\Services\Inventory\LowStockTracker;
 use App\Support\Inventory\LowStockThreshold;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 final readonly class AddProductToHouseholdAction
@@ -15,6 +17,7 @@ final readonly class AddProductToHouseholdAction
     public function __construct(
         private InventoryRepository $inventory,
         private HouseholdRepository $households,
+        private LowStockTracker $lowStockTracker,
     ) {}
 
     public function handle(AddProductToHouseholdData $data): AddProductToHouseholdResult
@@ -44,6 +47,8 @@ final readonly class AddProductToHouseholdAction
                 product: $product,
                 lowStockThreshold: $threshold,
             );
+
+            $this->lowStockTracker->refresh($householdProduct, CarbonImmutable::now());
 
             return new AddProductToHouseholdResult(
                 householdUuid: $household->uuid,

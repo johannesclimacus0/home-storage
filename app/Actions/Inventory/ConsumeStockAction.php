@@ -10,7 +10,9 @@ use App\DTO\Inventory\ConsumeStockResult;
 use App\DTO\Inventory\CreateStockMovementData;
 use App\Enums\StockMovementType;
 use App\Exceptions\Inventory\InsufficientStock;
+use App\Services\Inventory\LowStockTracker;
 use App\Support\Inventory\StockQuantity;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 final readonly class ConsumeStockAction
@@ -19,6 +21,7 @@ final readonly class ConsumeStockAction
         private InventoryRepository $inventory,
         private HouseholdRepository $households,
         private StockMovementRepository $movements,
+        private LowStockTracker $lowStockTracker,
     ) {}
 
     public function handle(ConsumeStockData $data): ConsumeStockResult
@@ -62,6 +65,10 @@ final readonly class ConsumeStockAction
                     actorName: $membership->user->name,
                 ));
             }
+            $totalQuantity = $this->lowStockTracker->refresh(
+                $householdProduct,
+                CarbonImmutable::now(),
+            );
 
             return new ConsumeStockResult(
                 householdUuid: $household->uuid,
@@ -70,9 +77,7 @@ final readonly class ConsumeStockAction
                 consumedQuantity: $quantity,
                 unit: $data->unit->baseUnit(),
                 locationQuantity: $stock->quantity,
-                totalQuantity: StockQuantity::databaseValue(
-                    $this->inventory->totalStockQuantity($householdProduct),
-                ),
+                totalQuantity: $totalQuantity,
             );
         });
     }

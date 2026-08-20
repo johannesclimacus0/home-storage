@@ -8,6 +8,7 @@ use App\Models\HouseholdProduct;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\StorageLocation;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 
 final class EloquentInventoryRepository implements InventoryRepository
@@ -208,5 +209,24 @@ final class EloquentInventoryRepository implements InventoryRepository
             ->decrement('quantity', $quantity);
 
         $stock->refresh();
+    }
+
+    public function updateLowStockSince(HouseholdProduct $householdProduct, ?CarbonImmutable $lowStockSince): void
+    {
+        $householdProduct->updateOrFail([
+            'low_stock_since' => $lowStockSince,
+        ]);
+    }
+
+    public function findLowStockProducts(Household $household): Collection
+    {
+        return HouseholdProduct::query()
+            ->where('household_id', $household->getKey())
+            ->whereNotNull('low_stock_since')
+            ->with('product')
+            ->withSum('stocks', 'quantity')
+            ->orderBy('low_stock_since')
+            ->orderBy('household_products.id')
+            ->get();
     }
 }

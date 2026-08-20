@@ -23,7 +23,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @mixin \Eloquent
  */
-#[Fillable(['household_id', 'product_id', 'low_stock_threshold'])]
+#[Fillable([
+    'household_id',
+    'product_id',
+    'low_stock_threshold',
+    'low_stock_since',
+])]
 class HouseholdProduct extends Model
 {
     /** @use HasFactory<HouseholdProductFactory> */

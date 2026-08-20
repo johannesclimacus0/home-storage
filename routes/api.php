@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\HouseholdController;
 use App\Http\Controllers\Api\HouseholdProductController;
+use App\Http\Controllers\Api\LowStockProductController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\StockMovementController;
@@ -26,6 +27,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         ->parameters(['storage-locations' => 'storageLocation']);
 
     Route::apiResource('households.products', HouseholdProductController::class);
+    Route::get('/households/{household}/low-stock-products', [LowStockProductController::class, 'index']);
 
     Route::post('/households/{household}/products/{product}/stocks', [StockController::class, 'store']);
     Route::post('/households/{household}/products/{product}/consume', [StockController::class, 'consume']);

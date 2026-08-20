@@ -7,6 +7,7 @@ use App\Models\HouseholdProduct;
 use App\Models\Product;
 use App\Models\Stock;
 use App\Models\StorageLocation;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 
 interface InventoryRepository
@@ -89,4 +90,14 @@ interface InventoryRepository
     ): Stock;
 
     public function decrementStock(Stock $stock, string $quantity): void;
+
+    public function updateLowStockSince(
+        HouseholdProduct $householdProduct,
+        ?CarbonImmutable $lowStockSince
+    ): void;
+
+    /**
+     * @return Collection<int, HouseholdProduct>
+     */
+    public function findLowStockProducts(Household $household): Collection;
 }
