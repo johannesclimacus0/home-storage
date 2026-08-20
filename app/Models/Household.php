@@ -56,4 +56,9 @@ class Household extends Model
     {
         return $this->hasMany(StorageLocation::class);
     }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
 }

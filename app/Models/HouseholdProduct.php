@@ -50,4 +50,9 @@ class HouseholdProduct extends Model
     {
         return $this->hasMany(Stock::class);
     }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
 }

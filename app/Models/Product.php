@@ -40,4 +40,9 @@ class Product extends Model
     {
         return $this->hasMany(HouseholdProduct::class);
     }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
+    }
 }
