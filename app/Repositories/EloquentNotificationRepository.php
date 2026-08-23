@@ -9,7 +9,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 final class EloquentNotificationRepository implements NotificationRepository
 {
-
     public function paginateForUser(User $user, int $perPage): LengthAwarePaginator
     {
         return $user->notifications()
@@ -30,7 +29,7 @@ final class EloquentNotificationRepository implements NotificationRepository
 
     public function markAsRead(DatabaseNotification $notification): void
     {
-         $notification->markAsRead();
+        $notification->markAsRead();
     }
 
     public function markAllAsRead(User $user): int

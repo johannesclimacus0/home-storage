@@ -17,8 +17,7 @@ class NotificationController extends Controller
     public function index(
         ListNotificationsRequest $request,
         ListNotificationsAction $action
-    ): AnonymousResourceCollection
-    {
+    ): AnonymousResourceCollection {
         $notifications = $action->handle(
             user: $request->user(),
             perPage: $request->integer('per_page', 15),
@@ -42,8 +41,7 @@ class NotificationController extends Controller
         Request $request,
         MarkNotificationAsReadAction $action,
         string $notification
-    ): NotificationResource
-    {
+    ): NotificationResource {
         $result = $action->handle(
             $request->user(),
             $notification,
@@ -51,5 +49,4 @@ class NotificationController extends Controller
 
         return new NotificationResource($result);
     }
-
 }

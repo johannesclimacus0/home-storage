@@ -8,9 +8,7 @@ use Illuminate\Notifications\DatabaseNotification;
 
 final readonly class MarkNotificationAsReadAction
 {
-    public function __construct(private NotificationRepository $repository)
-    {
-    }
+    public function __construct(private NotificationRepository $repository) {}
 
     public function handle(User $user, string $notificationUuid): DatabaseNotification
     {

@@ -41,7 +41,7 @@ class NotificationControllerTest extends TestCase
                     'data',
                     'read_at',
                     'created_at',
-                ]
+                ],
             ],
             'links',
             'meta',
@@ -69,7 +69,7 @@ class NotificationControllerTest extends TestCase
         return [
             'less than 1' => [0],
             'greater than 100' => [101],
-            'not integer' => ['meow']
+            'not integer' => ['meow'],
         ];
     }
 
@@ -127,6 +127,7 @@ class NotificationControllerTest extends TestCase
         $this->assertNotNull($response->json('data.read_at'));
         $this->assertNotNull($notification->refresh()->read_at);
     }
+
     public function test_user_cannot_mark_foreign_notification_as_read(): void
     {
         $user = User::factory()->create(['email_verified_at' => now()]);

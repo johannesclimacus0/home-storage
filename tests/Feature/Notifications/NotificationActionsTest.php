@@ -10,9 +10,7 @@ use App\Notifications\Inventory\LowStockNotification;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Notifications\Notification;
 use Illuminate\Support\Str;
 use Tests\TestCase;
 
@@ -35,6 +33,7 @@ class NotificationActionsTest extends TestCase
         self::assertTrue($list->contains($secondNotification));
         self::assertFalse($list->contains($otherUser));
     }
+
     public function test_mark_notification_as_read_action_marks_owned_notification(): void
     {
         $user = User::factory()->create();
@@ -49,6 +48,7 @@ class NotificationActionsTest extends TestCase
         $this->assertNotNull($firstNotification->refresh()->read_at);
         $this->assertNotNull($result->read_at);
     }
+
     public function test_mark_notification_as_read_action_rejects_foreign_notification(): void
     {
         $user = User::factory()->create();
@@ -61,6 +61,7 @@ class NotificationActionsTest extends TestCase
 
         $action->handle($user, $foreignNotification->getKey());
     }
+
     public function test_mark_all_notifications_as_read_action_marks_only_user_notifications(): void
     {
         $user = User::factory()->create();
@@ -75,6 +76,7 @@ class NotificationActionsTest extends TestCase
         $this->assertNotNull($secondNotification->refresh()->read_at);
         $this->assertNull($foreignNotification->refresh()->read_at);
     }
+
     private function createNotificationFor(
         User $user,
         string $productName = 'Milk',
