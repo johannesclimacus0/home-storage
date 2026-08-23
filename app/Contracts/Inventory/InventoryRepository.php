@@ -100,4 +100,6 @@ interface InventoryRepository
      * @return Collection<int, HouseholdProduct>
      */
     public function findLowStockProducts(Household $household): Collection;
+
+    public function findHouseholdProductWithRecipients(int $householdProductId): HouseholdProduct;
 }

@@ -3,6 +3,9 @@
 namespace App\Services\Inventory;
 
 use App\Contracts\Inventory\InventoryRepository;
+use App\DTO\Inventory\LowStockTrackingResult;
+use App\Events\Inventory\ProductBecameLowStock;
+use App\Events\Inventory\ProductRecoveredFromLowStock;
 use App\Models\HouseholdProduct;
 use App\Support\Inventory\LowStockEvaluator;
 use App\Support\Inventory\StockQuantity;
@@ -14,11 +17,13 @@ final readonly class LowStockTracker
         private InventoryRepository $inventory,
     ) {}
 
-    public function refresh(HouseholdProduct $householdProduct, CarbonImmutable $now): string
+    public function refresh(HouseholdProduct $householdProduct, CarbonImmutable $now): LowStockTrackingResult
     {
         $totalQuantity = StockQuantity::databaseValue(
             $this->inventory->totalStockQuantity($householdProduct),
         );
+
+        $wasLowStock = $householdProduct->low_stock_since !== null;
 
         $lowStockSince = LowStockEvaluator::resolveLowStockSince(
             totalQuantity: $totalQuantity,
@@ -27,8 +32,35 @@ final readonly class LowStockTracker
             now: $now,
         );
 
-        $this->inventory->updateLowStockSince($householdProduct, $lowStockSince);
+        $this->inventory->updateLowStockSince(
+            $householdProduct,
+            $lowStockSince,
+        );
 
-        return $totalQuantity;
+        $isLowStock = $lowStockSince !== null;
+
+        $result = new LowStockTrackingResult(
+            totalQuantity: $totalQuantity,
+            becameLowStock: !$wasLowStock && $isLowStock,
+            recovered: $wasLowStock && !$isLowStock,
+        );
+
+        if ($result->becameLowStock) {
+            ProductBecameLowStock::dispatch(
+                householdProductId: $householdProduct->getKey(),
+                totalQuantity: $result->totalQuantity,
+                occurredAt: $now,
+            );
+        }
+
+        if ($result->recovered) {
+            ProductRecoveredFromLowStock::dispatch(
+                householdProductId: $householdProduct->getKey(),
+                totalQuantity: $result->totalQuantity,
+                occurredAt: $now,
+            );
+        }
+
+        return $result;
     }
 }

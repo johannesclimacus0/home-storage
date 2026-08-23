@@ -65,7 +65,7 @@ final readonly class ConsumeStockAction
                     actorName: $membership->user->name,
                 ));
             }
-            $totalQuantity = $this->lowStockTracker->refresh(
+            $trackingResult = $this->lowStockTracker->refresh(
                 $householdProduct,
                 CarbonImmutable::now(),
             );
@@ -77,7 +77,7 @@ final readonly class ConsumeStockAction
                 consumedQuantity: $quantity,
                 unit: $data->unit->baseUnit(),
                 locationQuantity: $stock->quantity,
-                totalQuantity: $totalQuantity,
+                totalQuantity: $trackingResult->totalQuantity,
             );
         });
     }

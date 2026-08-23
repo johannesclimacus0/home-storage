@@ -78,7 +78,7 @@ final readonly class AddStockAction
                 ));
             }
 
-            $totalQuantity = $this->lowStockTracker->refresh(
+            $trackingResult = $this->lowStockTracker->refresh(
                 $householdProduct,
                 CarbonImmutable::now(),
             );
@@ -90,7 +90,7 @@ final readonly class AddStockAction
                 addedQuantity: $quantity,
                 unit: $data->unit->baseUnit(),
                 locationQuantity: $stock?->quantity ?? '0.000',
-                totalQuantity: $totalQuantity,
+                totalQuantity: $trackingResult->totalQuantity,
             );
         });
     }

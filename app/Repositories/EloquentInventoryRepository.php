@@ -229,4 +229,15 @@ final class EloquentInventoryRepository implements InventoryRepository
             ->orderBy('household_products.id')
             ->get();
     }
+
+    public function findHouseholdProductWithRecipients(int $householdProductId): HouseholdProduct
+    {
+        return HouseholdProduct::query()
+            ->whereKey($householdProductId)
+            ->with([
+                'product',
+                'household.householdMemberships.user',
+            ])
+            ->firstOrFail();
+    }
 }
