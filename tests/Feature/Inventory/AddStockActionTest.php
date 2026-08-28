@@ -107,7 +107,7 @@ class AddStockActionTest extends TestCase
                 unit: MeasurementUnit::Gram,
             )),
             InvalidStockQuantity::class,
-            'The quantity cannot be negative.',
+            'Количество не может быть отрицательным.',
         );
 
         $this->assertDatabaseCount('stocks', 0);
@@ -127,7 +127,7 @@ class AddStockActionTest extends TestCase
                 unit: MeasurementUnit::Liter,
             )),
             InvalidStockQuantity::class,
-            'The unit is not compatible with the product.',
+            'Единица измерения не подходит для этого продукта.',
         );
     }
 

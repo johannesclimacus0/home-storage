@@ -46,9 +46,7 @@ interface HouseholdRepository
         int $userId,
     ): bool;
 
-    /**
-     * @return Collection<int, HouseholdMembership>
-     */
+    /** @return Collection<int, HouseholdMembership> */
     public function findMembershipsForUser(int $userId): Collection;
 
     /** @return Collection<int, HouseholdMembership> */

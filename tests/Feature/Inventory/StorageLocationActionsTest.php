@@ -101,7 +101,7 @@ class StorageLocationActionsTest extends TestCase
                 name: '   ',
             )),
             InvalidArgumentException::class,
-            'The storage location name cannot be empty.',
+            'Название места хранения не может быть пустым.',
         );
 
         $this->assertDatabaseCount('storage_locations', 0);

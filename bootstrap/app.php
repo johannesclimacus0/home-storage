@@ -8,6 +8,7 @@ use App\Exceptions\Inventory\InvalidLowStockThreshold;
 use App\Exceptions\Inventory\InvalidStockQuantity;
 use App\Exceptions\Inventory\StorageLocationConflict;
 use App\Exceptions\Products\ProductConflict;
+use App\Exceptions\Shopping\ShoppingListItemAlreadyCompleted;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,11 +16,13 @@ use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
+        channels: __DIR__.'/../routes/channels.php',
         web: __DIR__ . '/../routes/web.php',
         api: __DIR__ . '/../routes/api.php',
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
+    ->withCommands()
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
     })
@@ -55,6 +58,12 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (InsufficientStock $exception) {
+            return response()->json([
+                'message' => $exception->getMessage(),
+            ], 409);
+        });
+
+        $exceptions->render(function (ShoppingListItemAlreadyCompleted $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
             ], 409);

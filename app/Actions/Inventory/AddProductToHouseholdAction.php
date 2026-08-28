@@ -39,7 +39,7 @@ final readonly class AddProductToHouseholdAction
             );
 
             if ($this->inventory->householdProductExists($household, $product)) {
-                throw new HouseholdProductConflict('Household product already exists.');
+                throw new HouseholdProductConflict(__('messages.products.already_in_household'));
             }
 
             $householdProduct = $this->inventory->createHouseholdProduct(

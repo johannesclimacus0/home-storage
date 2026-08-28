@@ -11,6 +11,54 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property string $uuid
+ * @property int $household_id
+ * @property int|null $household_product_id
+ * @property int $product_id
+ * @property int|null $storage_location_id
+ * @property int|null $actor_user_id
+ * @property StockMovementType $type
+ * @property numeric $input_quantity
+ * @property MeasurementUnit $input_unit
+ * @property numeric $quantity_delta
+ * @property numeric $quantity_before
+ * @property numeric $quantity_after
+ * @property string $product_name
+ * @property string $storage_location_name
+ * @property string $actor_name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $actor
+ * @property-read \App\Models\Household $household
+ * @property-read \App\Models\HouseholdProduct|null $householdProduct
+ * @property-read \App\Models\Product $product
+ * @property-read \App\Models\StorageLocation|null $storageLocation
+ * @method static \Database\Factories\StockMovementFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereActorName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereActorUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereHouseholdId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereHouseholdProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereInputQuantity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereInputUnit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereProductName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereQuantityAfter($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereQuantityBefore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereQuantityDelta($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereStorageLocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereStorageLocationName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereUuid($value)
+ * @mixin \Eloquent
+ */
 #[Fillable([
     'household_id',
     'household_product_id',

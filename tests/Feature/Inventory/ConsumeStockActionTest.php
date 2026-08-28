@@ -74,7 +74,7 @@ class ConsumeStockActionTest extends TestCase
                 MeasurementUnit::Gram,
             )),
             InsufficientStock::class,
-            'Insufficient stock.',
+            'Недостаточно запаса.',
         );
 
         $this->assertSame('100.000', $stock->refresh()->quantity);

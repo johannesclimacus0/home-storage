@@ -18,6 +18,8 @@ class HouseholdMembershipResource extends JsonResource
             'uuid' => $this->household->uuid,
             'name' => $this->household->name,
             'role' => $this->role->value,
+            'low_stock_reminders_enabled' => $this->low_stock_reminders_enabled,
+            'low_stock_reminder_interval_hours' => $this->low_stock_reminder_interval_hours,
         ];
     }
 }

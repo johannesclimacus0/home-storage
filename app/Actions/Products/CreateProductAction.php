@@ -24,7 +24,7 @@ final readonly class CreateProductAction
                 ),
             );
         } catch (UniqueConstraintViolationException) {
-            throw new ProductConflict('A product with this name already exists.');
+            throw new ProductConflict(__('messages.products.duplicate'));
         }
     }
 }

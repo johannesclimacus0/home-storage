@@ -135,7 +135,7 @@ class HouseholdActionsTest extends TestCase
         $this->assertThrows(
             fn () => $action->handle($data),
             DomainException::class,
-            'The current user is not the household owner.',
+            'Текущий пользователь не является владельцем дома.',
         );
 
         $this->assertDatabaseHas('household_memberships', [
@@ -210,7 +210,7 @@ class HouseholdActionsTest extends TestCase
         $this->assertThrows(
             fn () => $action->handle($data),
             DomainException::class,
-            'The owner cannot transfer ownership to themselves.',
+            'Владелец не может передать права самому себе.',
         );
 
         $this->assertDatabaseHas('household_memberships', [
@@ -281,7 +281,7 @@ class HouseholdActionsTest extends TestCase
         $this->assertThrows(
             fn () => $action->handle($data),
             DomainException::class,
-            'Only the household owner can add members.',
+            'Добавлять участников может только владелец дома.',
         );
 
         $this->assertDatabaseMissing('household_memberships', [
@@ -319,7 +319,7 @@ class HouseholdActionsTest extends TestCase
         $this->assertThrows(
             fn () => $action->handle($data),
             DomainException::class,
-            'The user is already a household member.',
+            'Пользователь уже является участником дома.',
         );
 
         $this->assertSame(
@@ -380,7 +380,7 @@ class HouseholdActionsTest extends TestCase
         $this->assertThrows(
             fn () => $action->handle($data),
             DomainException::class,
-            'The owner is already a household member.',
+            'Владелец уже является участником дома.',
         );
 
         $this->assertSame(

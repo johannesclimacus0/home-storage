@@ -17,9 +17,10 @@ use Illuminate\Support\Carbon;
  * @property HouseholdRole $role
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Household $household
- * @property-read User $user
- *
+ * @property bool $low_stock_reminders_enabled
+ * @property int $low_stock_reminder_interval_hours
+ * @property-read \App\Models\Household $household
+ * @property-read \App\Models\User $user
  * @method static \Database\Factories\HouseholdMembershipFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership newQuery()
@@ -27,13 +28,20 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereHouseholdId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereLowStockReminderIntervalHours($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereLowStockRemindersEnabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMembership whereUserId($value)
- *
  * @mixin \Eloquent
  */
-#[Fillable(['household_id', 'user_id', 'role'])]
+#[Fillable([
+    'household_id',
+    'user_id',
+    'role',
+    'low_stock_reminders_enabled',
+    'low_stock_reminder_interval_hours',
+])]
 class HouseholdMembership extends Model
 {
     /** @use HasFactory<HouseholdMembershipFactory> */
@@ -41,6 +49,8 @@ class HouseholdMembership extends Model
 
     protected $casts = [
         'role' => HouseholdRole::class,
+        'low_stock_reminders_enabled' => 'boolean',
+        'low_stock_reminder_interval_hours' => 'integer',
     ];
 
     public function household(): BelongsTo

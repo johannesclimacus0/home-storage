@@ -24,6 +24,8 @@ class HouseholdMembershipFactory extends Factory
             'household_id' => Household::factory(),
             'user_id' => User::factory(),
             'role' => HouseholdRole::Member,
+            'low_stock_reminders_enabled' => true,
+            'low_stock_reminder_interval_hours' => 24,
         ];
     }
 

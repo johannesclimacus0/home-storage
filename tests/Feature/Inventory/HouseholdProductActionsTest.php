@@ -97,7 +97,7 @@ class HouseholdProductActionsTest extends TestCase
                 lowStockThreshold: '10',
             )),
             HouseholdProductConflict::class,
-            'Household product already exists.',
+            'Продукт уже добавлен в этот дом.',
         );
 
         $this->assertDatabaseCount('household_products', 1);
@@ -116,7 +116,7 @@ class HouseholdProductActionsTest extends TestCase
                 lowStockThreshold: '-0.001',
             )),
             InvalidArgumentException::class,
-            'The low stock threshold cannot be negative.',
+            'Порог не может быть отрицательным.',
         );
     }
 
@@ -133,7 +133,7 @@ class HouseholdProductActionsTest extends TestCase
                 lowStockThreshold: '1.5',
             )),
             InvalidArgumentException::class,
-            'Countable products require a whole-number threshold.',
+            'Для штучных продуктов порог должен быть целым числом.',
         );
     }
 
@@ -150,7 +150,7 @@ class HouseholdProductActionsTest extends TestCase
                 lowStockThreshold: '1.2345',
             )),
             InvalidArgumentException::class,
-            'The low stock threshold must be a decimal with at most three decimal places.',
+            'Порог должен быть числом не более чем с тремя знаками после запятой.',
         );
     }
 

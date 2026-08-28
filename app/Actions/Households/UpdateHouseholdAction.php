@@ -20,7 +20,7 @@ final readonly class UpdateHouseholdAction
             $name = trim($data->name);
 
             if ($name === '') {
-                throw new InvalidArgumentException('The household name cannot be empty.');
+                throw new InvalidArgumentException(__('messages.households.name_required'));
             }
 
             $household = $this->households->findByUuidForUpdate($data->uuid);
@@ -30,7 +30,7 @@ final readonly class UpdateHouseholdAction
             );
 
             if ($actor->role !== HouseholdRole::Owner) {
-                throw new HouseholdAccessDenied('Only the household owner can update the household.');
+                throw new HouseholdAccessDenied(__('messages.households.owner_only_update'));
             }
 
             $this->households->update($household, $name);

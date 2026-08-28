@@ -1,0 +1,46 @@
+<?php
+
+return [
+    'accepted' => 'Поле :attribute должно быть принято.',
+    'array' => 'Поле :attribute должно быть массивом.',
+    'boolean' => 'Поле :attribute должно иметь значение да или нет.',
+    'confirmed' => 'Подтверждение поля :attribute не совпадает.',
+    'date' => 'Поле :attribute должно содержать корректную дату.',
+    'decimal' => 'Поле :attribute должно содержать :decimal знаков после запятой.',
+    'email' => 'Поле :attribute должно содержать корректный адрес электронной почты.',
+    'enum' => 'Выбранное значение поля :attribute недопустимо.',
+    'exists' => 'Выбранное значение поля :attribute недопустимо.',
+    'integer' => 'Поле :attribute должно быть целым числом.',
+    'in' => 'Выбранное значение поля :attribute недопустимо.',
+    'max' => [
+        'numeric' => 'Поле :attribute не должно быть больше :max.',
+        'string' => 'Поле :attribute не должно быть длиннее :max символов.',
+    ],
+    'min' => [
+        'numeric' => 'Поле :attribute должно быть не меньше :min.',
+        'string' => 'Поле :attribute должно содержать не меньше :min символов.',
+    ],
+    'numeric' => 'Поле :attribute должно быть числом.',
+    'required' => 'Поле :attribute обязательно.',
+    'string' => 'Поле :attribute должно быть строкой.',
+    'unique' => 'Такое значение поля :attribute уже используется.',
+    'url' => 'Поле :attribute должно содержать корректный URL.',
+    'uuid' => 'Поле :attribute должно содержать корректный UUID.',
+
+    'attributes' => [
+        'name' => 'название',
+        'email' => 'электронная почта',
+        'password' => 'пароль',
+        'password_confirmation' => 'подтверждение пароля',
+        'product_uuid' => 'продукт',
+        'storage_location_uuid' => 'место хранения',
+        'quantity' => 'количество',
+        'unit' => 'единица измерения',
+        'low_stock_threshold' => 'порог уведомления',
+        'interval_hours' => 'интервал напоминания',
+        'enabled' => 'состояние напоминаний',
+        'new_owner_user_id' => 'новый владелец',
+        'per_page' => 'количество на странице',
+        'type' => 'тип',
+    ],
+];

@@ -4,8 +4,6 @@ namespace Tests\Feature\Notifications;
 
 use App\Contracts\Notifications\NotificationRepository;
 use App\Models\User;
-use App\Notifications\Inventory\LowStockNotification;
-use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\DatabaseNotification;
@@ -240,27 +238,13 @@ class EloquentNotificationRepositoryTest extends TestCase
         User $user,
         string $productName = 'Milk',
     ): DatabaseNotification {
-        $existingIds = $user->notifications()
-            ->pluck('id');
-
-        $user->notifyNow(
-            new LowStockNotification(
-                householdUuid: (string) Str::uuid(),
-                householdName: 'Test household',
-                productUuid: (string) Str::uuid(),
-                productName: $productName,
-                measurementType: 'volume',
-                totalQuantity: '800.000',
-                lowStockThreshold: '1000.000',
-                occurredAt: CarbonImmutable::parse(
-                    '2026-08-23 10:00:00',
-                ),
-            ),
-            ['database'],
-        );
-
-        return $user->notifications()
-            ->whereNotIn('id', $existingIds)
-            ->firstOrFail();
+        return $user->notifications()->create([
+            'id' => (string) Str::uuid(),
+            'type' => 'test',
+            'data' => [
+                'product_uuid' => (string) Str::uuid(),
+                'product_name' => $productName,
+            ],
+        ]);
     }
 }

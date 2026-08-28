@@ -225,7 +225,7 @@ class StorageLocationControllerTest extends TestCase
             ->assertConflict()
             ->assertJsonPath(
                 'message',
-                'Storage location contains stock and cannot be deleted.',
+                'Нельзя удалить место хранения, пока в нём есть запасы.',
             );
 
         $this->assertDatabaseHas('storage_locations', ['id' => $location->id]);

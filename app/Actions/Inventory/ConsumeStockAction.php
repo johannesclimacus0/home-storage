@@ -42,7 +42,7 @@ final readonly class ConsumeStockAction
             $quantityBefore = $stock->quantity;
 
             if (StockQuantity::toMinorUnits($quantity) > StockQuantity::toMinorUnits($stock->quantity)) {
-                throw new InsufficientStock('Insufficient stock.');
+                throw new InsufficientStock(__('messages.inventory.insufficient_stock'));
             }
 
             if ($quantity !== '0.000') {

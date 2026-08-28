@@ -47,7 +47,7 @@ class ConsumeStockControllerTest extends TestCase
                 'unit' => 'g',
             ])
             ->assertConflict()
-            ->assertJsonPath('message', 'Insufficient stock.');
+            ->assertJsonPath('message', 'Недостаточно запаса.');
 
         $this->assertSame('1000.000', $stock->refresh()->quantity);
     }

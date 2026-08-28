@@ -18,7 +18,7 @@ final readonly class DeleteHouseholdAction
             $actor = $this->households->findMembershipForUpdate($household, $actorUserId);
 
             if ($actor->role !== HouseholdRole::Owner) {
-                throw new HouseholdAccessDenied('Only the household owner can delete the household.');
+                throw new HouseholdAccessDenied(__('messages.households.owner_only_delete'));
             }
 
             $this->households->delete($household);

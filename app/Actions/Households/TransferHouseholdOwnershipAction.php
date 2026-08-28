@@ -17,7 +17,7 @@ final readonly class TransferHouseholdOwnershipAction
     public function handle(TransferHouseholdOwnershipData $data): TransferHouseholdOwnershipResult
     {
         if ($data->currentOwnerUserId === $data->newOwnerUserId) {
-            throw new HouseholdMembershipConflict('The owner cannot transfer ownership to themselves.');
+            throw new HouseholdMembershipConflict(__('messages.households.cannot_transfer_to_self'));
         }
 
         return DB::transaction(function () use ($data): TransferHouseholdOwnershipResult {
@@ -34,11 +34,11 @@ final readonly class TransferHouseholdOwnershipAction
             );
 
             if ($owner->role !== HouseholdRole::Owner) {
-                throw new HouseholdAccessDenied('The current user is not the household owner.');
+                throw new HouseholdAccessDenied(__('messages.households.current_user_not_owner'));
             }
 
             if ($newOwner->role !== HouseholdRole::Member) {
-                throw new HouseholdMembershipConflict('The new owner is not a household member.');
+                throw new HouseholdMembershipConflict(__('messages.households.new_owner_not_member'));
             }
 
             $this->households->changeRole($owner, HouseholdRole::Member);

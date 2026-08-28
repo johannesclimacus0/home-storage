@@ -13,12 +13,12 @@ final class LowStockThreshold
 
         if ($value === '' || !is_numeric($value) || str_contains(strtolower($value), 'e')) {
             throw new InvalidLowStockThreshold(
-                'The low stock threshold must be a decimal with at most three decimal places.',
+                __('messages.inventory.threshold_format'),
             );
         }
 
         if (str_starts_with($value, '-')) {
-            throw new InvalidLowStockThreshold('The low stock threshold cannot be negative.');
+            throw new InvalidLowStockThreshold(__('messages.inventory.threshold_negative'));
         }
 
         $value = ltrim($value, '+');
@@ -26,13 +26,13 @@ final class LowStockThreshold
 
         if (strlen($fraction) > 3) {
             throw new InvalidLowStockThreshold(
-                'The low stock threshold must be a decimal with at most three decimal places.',
+                __('messages.inventory.threshold_format'),
             );
         }
 
         if ($measurementType === MeasurementType::Count && trim($fraction, '0') !== '') {
             throw new InvalidLowStockThreshold(
-                'Countable products require a whole-number threshold.',
+                __('messages.inventory.threshold_whole'),
             );
         }
 
@@ -40,7 +40,7 @@ final class LowStockThreshold
         $whole = $whole === '' ? '0' : $whole;
 
         if (strlen($whole) > 11) {
-            throw new InvalidLowStockThreshold('The low stock threshold is too big.');
+            throw new InvalidLowStockThreshold(__('messages.inventory.threshold_too_large'));
         }
 
         return $whole . '.' . str_pad($fraction, 3, '0');

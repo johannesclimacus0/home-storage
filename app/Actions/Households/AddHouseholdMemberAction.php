@@ -25,7 +25,7 @@ final readonly class AddHouseholdMemberAction
             );
 
             if ($owner->role !== HouseholdRole::Owner) {
-                throw new HouseholdAccessDenied('Only the household owner can add members.');
+                throw new HouseholdAccessDenied(__('messages.households.owner_only_add_members'));
             }
 
             $user = $this->households->findUserByEmail(
@@ -33,11 +33,11 @@ final readonly class AddHouseholdMemberAction
             );
 
             if ($user->getKey() === $data->actorUserId) {
-                throw new HouseholdMembershipConflict('The owner is already a household member.');
+                throw new HouseholdMembershipConflict(__('messages.households.owner_already_member'));
             }
 
             if ($this->households->membershipExists($household, $user->getKey())) {
-                throw new HouseholdMembershipConflict('The user is already a household member.');
+                throw new HouseholdMembershipConflict(__('messages.households.user_already_member'));
             }
 
             $newMembership = $this->households->addMember(

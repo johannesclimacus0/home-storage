@@ -15,7 +15,7 @@ final class StockQuantity
     ): string {
         if ($unit->measurementType() !== $measurementType) {
             throw new InvalidStockQuantity(
-                'The unit is not compatible with the product.',
+                __('messages.inventory.unit_incompatible'),
                 'unit',
             );
         }
@@ -23,7 +23,7 @@ final class StockQuantity
         [$whole, $fraction] = self::parts($value);
 
         if ($measurementType === MeasurementType::Count && trim($fraction, '0') !== '') {
-            throw new InvalidStockQuantity('Countable products require a whole-number quantity.');
+            throw new InvalidStockQuantity(__('messages.inventory.quantity_whole'));
         }
 
         if ($unit->isLargeUnit()) {
@@ -33,7 +33,7 @@ final class StockQuantity
         }
 
         if (strlen($whole) > 11) {
-            throw new InvalidStockQuantity('The quantity is too large.');
+            throw new InvalidStockQuantity(__('messages.inventory.quantity_too_large'));
         }
 
         return $whole . '.' . $fraction;
@@ -58,18 +58,18 @@ final class StockQuantity
         $value = trim($value);
 
         if ($value === '' || !is_numeric($value) || str_contains(strtolower($value), 'e')) {
-            throw new InvalidStockQuantity('The quantity must be a decimal with at most three decimal places.');
+            throw new InvalidStockQuantity(__('messages.inventory.quantity_format'));
         }
 
         if (str_starts_with($value, '-')) {
-            throw new InvalidStockQuantity('The quantity cannot be negative.');
+            throw new InvalidStockQuantity(__('messages.inventory.quantity_negative'));
         }
 
         $value = ltrim($value, '+');
         [$whole, $fraction] = array_pad(explode('.', $value, 2), 2, '');
 
         if (strlen($fraction) > 3) {
-            throw new InvalidStockQuantity('The quantity must be a decimal with at most three decimal places.');
+            throw new InvalidStockQuantity(__('messages.inventory.quantity_format'));
         }
 
         $whole = ltrim($whole, '0');

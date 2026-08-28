@@ -171,7 +171,7 @@ class HouseholdControllerTest extends TestCase
         );
 
         $response->assertConflict();
-        $response->assertJsonPath('message', 'The user is already a household member.');
+        $response->assertJsonPath('message', 'Пользователь уже является участником дома.');
         $this->assertSame(
             1,
             $household->householdMemberships()
@@ -381,7 +381,7 @@ class HouseholdControllerTest extends TestCase
         );
 
         $response->assertConflict();
-        $response->assertJsonPath('message', 'The owner cannot transfer ownership to themselves.');
+        $response->assertJsonPath('message', 'Владелец не может передать права самому себе.');
         $this->assertDatabaseHas('household_memberships', [
             'household_id' => $household->id,
             'user_id' => $owner->id,

@@ -29,7 +29,13 @@ class HouseholdModelsTest extends TestCase
         $membership->setRawAttributes(['role' => 'owner']);
 
         $this->assertSame(
-            ['household_id', 'user_id', 'role'],
+            [
+                'household_id',
+                'user_id',
+                'role',
+                'low_stock_reminders_enabled',
+                'low_stock_reminder_interval_hours',
+            ],
             $membership->getFillable(),
         );
         $this->assertSame(HouseholdRole::Owner, $membership->role);

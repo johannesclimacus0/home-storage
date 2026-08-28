@@ -26,7 +26,7 @@ final readonly class DeleteStorageLocationAction
 
             if ($this->inventory->storageLocationHasStock($location)) {
                 throw new StorageLocationConflict(
-                    'Storage location contains stock and cannot be deleted.',
+                    __('messages.storage_locations.contains_stock'),
                 );
             }
 

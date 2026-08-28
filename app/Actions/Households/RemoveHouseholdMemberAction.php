@@ -22,7 +22,7 @@ final readonly class RemoveHouseholdMemberAction
             $target = $memberships->firstWhere('user_id', $data->memberUserId);
 
             if ($actor === null || $actor->role !== HouseholdRole::Owner) {
-                throw new HouseholdAccessDenied('Only the household owner can remove members.');
+                throw new HouseholdAccessDenied(__('messages.households.owner_only_remove_members'));
             }
 
             if ($target === null) {
@@ -31,7 +31,7 @@ final readonly class RemoveHouseholdMemberAction
 
             if ($target->role === HouseholdRole::Owner) {
                 throw new HouseholdMembershipConflict(
-                    'The household owner cannot be removed through the members endpoint.',
+                    __('messages.households.cannot_remove_owner'),
                 );
             }
 

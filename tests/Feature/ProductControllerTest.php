@@ -155,7 +155,7 @@ final class ProductControllerTest extends TestCase
             'name' => '  giant   Kitten ',
             'measurement_type' => MeasurementType::Volume->value,
         ])->assertConflict()
-            ->assertJsonPath('message', 'A product with this name already exists.');
+            ->assertJsonPath('message', 'Продукт с таким названием уже существует.');
 
         $this->assertDatabaseCount('products', 1);
     }

@@ -23,7 +23,7 @@ final readonly class CreateStorageLocationAction
             $name = trim($data->name);
 
             if ($name === '') {
-                throw new InvalidArgumentException('The storage location name cannot be empty.');
+                throw new InvalidArgumentException(__('messages.storage_locations.name_required'));
             }
 
             $household = $this->households->findByUuidForUpdate($data->householdUuid);
