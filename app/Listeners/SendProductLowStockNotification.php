@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Contracts\Inventory\LowStockReminderRepository;
 use App\Events\Inventory\ProductBecameLowStock;
 use App\Models\HouseholdProduct;
 use App\Notifications\Inventory\ProductLowStockNotification;
@@ -9,6 +10,10 @@ use Illuminate\Support\Facades\Notification;
 
 final class SendProductLowStockNotification
 {
+    public function __construct(
+        private LowStockReminderRepository $reminders
+    ) {}
+
     public function handle(ProductBecameLowStock $event): void
     {
         $householdProduct = HouseholdProduct::query()
@@ -20,6 +25,10 @@ final class SendProductLowStockNotification
         $users = $householdProduct->household
             ->householdMemberships
             ->pluck('user');
+
+        $memberships = $householdProduct
+            ->household
+            ->householdMemberships;
 
         Notification::send(
             $users,
@@ -34,5 +43,13 @@ final class SendProductLowStockNotification
                 becameLowAt: $event->occurredAt,
             ),
         );
+
+        foreach ($memberships as $membership) {
+            $this->reminders->markDispatched(
+                membership: $membership,
+                householdProduct: $householdProduct,
+                at: $event->occurredAt
+            );
+        }
     }
 }
