@@ -191,6 +191,14 @@ function preferredUnit(type: MeasurementType): MeasurementUnit {
     return type === 'mass' ? 'kg' : type === 'volume' ? 'l' : 'piece'
 }
 
+function productStatusClass(product: HouseholdProduct): string {
+    return product.is_low_stock ? 'text-amber-700' : 'text-emerald-700'
+}
+
+function productStatusLabel(product: HouseholdProduct): string {
+    return product.is_low_stock ? 'Заканчивается' : 'В наличии'
+}
+
 function clearFormState(): void {
     formError.value = null
     fieldErrors.value = {}
@@ -255,7 +263,7 @@ function setFormError(requestError: unknown): void {
                                 <td class="px-4 py-3 tabular-nums">{{ formatQuantity(product.total_quantity, product.measurement_type) }}</td>
                                 <td class="px-4 py-3 tabular-nums text-slate-500">{{ formatQuantity(product.low_stock_threshold, product.measurement_type) }}</td>
                                 <td class="px-4 py-3">
-                                    <span :class="product.is_low_stock ? 'text-amber-700' : 'text-emerald-700'">{{ product.is_low_stock ? 'Заканчивается' : 'В наличии' }}</span>
+                                    <span :class="productStatusClass(product)">{{ productStatusLabel(product) }}</span>
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="flex justify-end gap-1">

@@ -59,6 +59,10 @@ function textValue(notification: UserNotification, key: string): string {
     const value = notification.data[key]
     return typeof value === 'string' || typeof value === 'number' ? String(value) : ''
 }
+
+function notificationClasses(notification: UserNotification): string {
+    return notification.read_at === null ? 'bg-amber-50/50' : ''
+}
 </script>
 
 <template>
@@ -78,7 +82,7 @@ function textValue(notification: UserNotification, key: string): string {
                     v-for="notification in notifications"
                     :key="notification.uuid"
                     class="flex gap-3 px-4 py-3"
-                    :class="notification.read_at === null ? 'bg-amber-50/50' : ''"
+                    :class="notificationClasses(notification)"
                 >
                     <span v-if="notification.read_at === null" class="mt-2 size-1.5 shrink-0 rounded-full bg-amber-500"></span>
                     <span v-else class="w-1.5 shrink-0"></span>

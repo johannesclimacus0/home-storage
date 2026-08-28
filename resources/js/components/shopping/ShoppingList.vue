@@ -14,15 +14,37 @@ const emit = defineEmits<{
 function updateQuantity(event: Event, item: ShoppingItem): void {
     emit('update', item.uuid, (event.target as HTMLInputElement).value, item.unit)
 }
+
+function isCompleted(item: ShoppingItem): boolean {
+    return item.completed_at !== null
+}
+
+function completionButtonClasses(item: ShoppingItem): string {
+    return isCompleted(item)
+        ? 'border-slate-900 bg-slate-900 text-white'
+        : 'border-slate-300 bg-white'
+}
+
+function productNameClasses(item: ShoppingItem): string {
+    return isCompleted(item) ? 'text-slate-400 line-through' : ''
+}
+
+function toggleLabel(item: ShoppingItem): string {
+    return isCompleted(item) ? 'Вернуть в список' : 'Отметить выполненным'
+}
+
+function completionMark(item: ShoppingItem): string {
+    return isCompleted(item) ? '✓' : ''
+}
 </script>
 
 <template>
     <article v-for="item in items" :key="item.uuid" class="flex flex-col gap-3 border-b border-slate-100 py-3 last:border-0 sm:flex-row sm:items-center">
-        <button type="button" class="size-5 shrink-0 rounded border text-xs" :class="item.completed_at === null ? 'border-slate-300 bg-white' : 'border-slate-900 bg-slate-900 text-white'" :aria-label="item.completed_at === null ? 'Отметить выполненным' : 'Вернуть в список'" @click="emit('toggle', item)">
-            {{ item.completed_at === null ? '' : '✓' }}
+        <button type="button" class="size-5 shrink-0 rounded border text-xs" :class="completionButtonClasses(item)" :aria-label="toggleLabel(item)" @click="emit('toggle', item)">
+            {{ completionMark(item) }}
         </button>
         <div class="min-w-0 flex-1">
-            <p class="font-medium text-slate-900" :class="{ 'text-slate-400 line-through': item.completed_at !== null }">{{ item.product.name }}</p>
+            <p class="font-medium text-slate-900" :class="productNameClasses(item)">{{ item.product.name }}</p>
             <p class="text-xs text-slate-400">Добавил: {{ item.added_by.name }}</p>
         </div>
         <div class="flex items-center gap-2">

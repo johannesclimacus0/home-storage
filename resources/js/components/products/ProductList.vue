@@ -8,6 +8,12 @@ defineProps<{
 const emit = defineEmits<{
     consume: [productUuid: string]
 }>()
+
+function productClasses(product: Product): string {
+    return product.quantity <= product.lowStockThreshold
+        ? 'border-amber-200 bg-amber-50/70'
+        : 'border-slate-200 bg-white hover:border-slate-300'
+}
 </script>
 
 <template>
@@ -15,9 +21,7 @@ const emit = defineEmits<{
         v-for="product in products"
         :key="product.uuid"
         class="flex flex-col gap-4 rounded-xl border p-4 transition sm:flex-row sm:items-center"
-        :class="product.quantity <= product.lowStockThreshold
-            ? 'border-amber-200 bg-amber-50/70'
-            : 'border-slate-200 bg-white hover:border-slate-300'"
+        :class="productClasses(product)"
     >
         <div class="min-w-0 flex-1">
             <h2 class="font-medium text-slate-900">{{ product.name }}</h2>

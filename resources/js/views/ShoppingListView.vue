@@ -27,6 +27,13 @@ const visibleItems = computed(() => {
     if (selectedFilter.value === 'completed') return items.value.filter(item => item.completed_at !== null)
     return items.value
 })
+const filters = computed(() => (['all', 'active', 'completed'] as ItemFilter[]).map(filter => ({
+    value: filter,
+    label: filterLabel(filter),
+    classes: selectedFilter.value === filter
+        ? 'bg-slate-900 text-white'
+        : 'text-slate-600 hover:bg-slate-100'
+})))
 
 onMounted(loadProducts)
 watch(selectedHouseholdUuid, loadItems, { immediate: true })
@@ -153,9 +160,9 @@ function filterLabel(filter: ItemFilter): string {
             </div>
             <fieldset class="inline-flex w-fit rounded-md border border-slate-200 bg-white p-1 text-sm">
                 <legend class="sr-only">Фильтр списка покупок</legend>
-                <label v-for="filter in (['all', 'active', 'completed'] as ItemFilter[])" :key="filter" class="cursor-pointer rounded px-3 py-1.5 capitalize" :class="selectedFilter === filter ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'">
-                    <input v-model="selectedFilter" class="sr-only" type="radio" :value="filter">
-                    {{ filterLabel(filter) }}
+                <label v-for="filter in filters" :key="filter.value" class="cursor-pointer rounded px-3 py-1.5 capitalize" :class="filter.classes">
+                    <input v-model="selectedFilter" class="sr-only" type="radio" :value="filter.value">
+                    {{ filter.label }}
                 </label>
             </fieldset>
         </header>
