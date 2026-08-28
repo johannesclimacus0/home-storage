@@ -6,9 +6,11 @@ use App\Contracts\Households\HouseholdRepository;
 use App\Contracts\Inventory\InventoryRepository;
 use App\Contracts\Inventory\LowStockReminderRepository;
 use App\Contracts\Inventory\StockMovementRepository;
+use App\Contracts\Messages\MessageRepository;
 use App\Contracts\Notifications\NotificationRepository;
 use App\Contracts\Products\ProductRepository;
 use App\Contracts\Shopping\ShoppingListRepository;
+use App\Repositories\EloquentHouseholdMessageRepository;
 use App\Repositories\EloquentHouseholdRepository;
 use App\Repositories\EloquentInventoryRepository;
 use App\Repositories\EloquentLowStockReminderRepository;
@@ -32,6 +34,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(StockMovementRepository::class, EloquentStockMovementRepository::class);
         $this->app->bind(NotificationRepository::class, EloquentNotificationRepository::class);
         $this->app->bind(ShoppingListRepository::class, EloquentShoppingListRepository::class);
+        $this->app->bind(MessageRepository::class, EloquentHouseholdMessageRepository::class);
     }
 
     /**

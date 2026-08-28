@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\HouseholdController;
+use App\Http\Controllers\Api\HouseholdMessageController;
 use App\Http\Controllers\Api\HouseholdProductController;
 use App\Http\Controllers\Api\LowStockProductController;
 use App\Http\Controllers\Api\LowStockReminderSettingController;
@@ -44,6 +45,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::patch('/households/{household}/shopping-list-items/{shoppingListItem}/reopen', [ShoppingListItemController::class, 'reopen']);
     Route::post('/households/{household}/shopping-list-items/{shoppingListItem}/purchase', [ShoppingListItemController::class, 'purchase']);
     Route::delete('/households/{household}/shopping-list-items/{shoppingListItem}', [ShoppingListItemController::class, 'destroy']);
+
+    Route::get('/households/{household}/messages', [HouseholdMessageController::class, 'index']);
+    Route::post('/households/{household}/messages', [HouseholdMessageController::class, 'store']);
+    Route::patch('/households/{household}/messages/{message}', [HouseholdMessageController::class, 'update']);
+    Route::delete('/households/{household}/messages/{message}', [HouseholdMessageController::class, 'destroy']);
 
     Route::apiResource('products', ProductController::class)
         ->only(['index', 'store', 'show'])

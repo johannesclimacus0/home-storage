@@ -68,4 +68,9 @@ class Household extends Model
     {
         return $this->hasMany(ShoppingListItem::class);
     }
+
+    public function messages(): HasMany
+    {
+        return $this->hasMany(HouseholdMessage::class);
+    }
 }

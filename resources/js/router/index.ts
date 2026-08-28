@@ -13,6 +13,7 @@ import NotificationsView from '../views/NotificationsView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import ForgotPasswordView from '../views/ForgotPasswordView.vue'
 import ResetPasswordView from '../views/ResetPasswordView.vue'
+import HouseholdChatView from '../views/HouseholdChatView.vue'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -68,6 +69,7 @@ const router = createRouter({
                 { path: 'catalog', name: 'catalog', component: CatalogView },
                 { path: 'households', name: 'household-settings', component: HouseholdSettingsView },
                 { path: 'notifications', name: 'notifications', component: NotificationsView },
+                { path: 'chat', name: 'household-chat', component: HouseholdChatView },
             ],
         },
     ],

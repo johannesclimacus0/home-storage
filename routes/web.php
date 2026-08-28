@@ -16,3 +16,4 @@ Route::view('/history', 'app');
 Route::view('/catalog', 'app');
 Route::view('/households', 'app');
 Route::view('/notifications', 'app');
+Route::view('/chat', 'app');
