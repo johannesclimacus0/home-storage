@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use Illuminate\Auth\Notifications\VerifyEmail;
+use App\Notifications\Auth\VerifyEmailNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
@@ -42,7 +42,7 @@ class RegistrationTest extends TestCase
         $this->assertNull($user->email_verified_at);
         $this->assertAuthenticatedAs($user);
         $this->assertTrue(Hash::check('password', $user->password));
-        Notification::assertSentTo([$user], VerifyEmail::class);
+        Notification::assertSentTo([$user], VerifyEmailNotification::class);
     }
 
     public function test_user_cannot_register_with_existing_email(): void
