@@ -21,6 +21,8 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $household_memberships_count
  * @property-read Collection<int, \App\Models\HouseholdProduct> $householdProducts
  * @property-read int|null $household_products_count
+ * @property-read Collection<int, \App\Models\HouseholdMessage> $messages
+ * @property-read int|null $messages_count
  * @property-read Collection<int, \App\Models\ShoppingListItem> $shoppingListItems
  * @property-read int|null $shopping_list_items_count
  * @property-read Collection<int, \App\Models\StockMovement> $stockMovements

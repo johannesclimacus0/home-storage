@@ -30,6 +30,8 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, \App\Models\HouseholdMembership> $householdMemberships
  * @property-read int|null $household_memberships_count
+ * @property-read Collection<int, \App\Models\HouseholdMessage> $messages
+ * @property-read int|null $messages_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read Collection<int, \App\Models\ShoppingListItem> $shoppingListItems
