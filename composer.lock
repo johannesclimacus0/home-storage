@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eda3ff4229c4ad484bce1dca29d6d59c",
+    "content-hash": "e91b81b1640019a348f33f9020d657c3",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1386,6 +1386,42 @@
                 }
             ],
             "time": "2026-07-17T13:53:03+00:00"
+        },
+        {
+            "name": "johannesclimacus/artisan-factory",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "packages/johannesclimacus/artisan-factory",
+                "reference": "9841bad4fcb75c975da561f79f4c326367f6625b"
+            },
+            "require": {
+                "illuminate/console": "^13.0",
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.3"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JohannesClimacus\\ArtisanFactory\\ArtisanFactoryServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JohannesClimacus\\ArtisanFactory\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Create models from Artisan via factories",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "laravel/fortify",
@@ -11479,7 +11515,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "johannesclimacus/artisan-factory": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

@@ -8,8 +8,18 @@
         "framework"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "path",
+            "url": "packages/johannesclimacus/artisan-factory",
+            "options": {
+                "symlink": true
+            }
+        }
+    ],
     "require": {
         "php": "^8.3",
+        "johannesclimacus/artisan-factory": "@dev",
         "laravel/fortify": "^1.38",
         "laravel/framework": "^13.17",
         "laravel/reverb": "^1.0",

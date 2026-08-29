@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Feature\Console;
+namespace JohannesClimacus\ArtisanFactory\Tests\Feature;
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use JohannesClimacus\ArtisanFactory\Tests\Support\Models\TestUser;
+use JohannesClimacus\ArtisanFactory\Tests\TestCase;
 
 class FactoryCreateCommandTest extends TestCase
 {
@@ -13,42 +13,40 @@ class FactoryCreateCommandTest extends TestCase
     public function test_command_creates_requested_number_of_models(): void
     {
         $this->artisan('factory:create', [
-            'model' => 'User',
+            'model' => 'TestUser',
             '--count' => 3
         ])
-            ->expectsOutput('Created 3 User records.')
+            ->expectsOutput('Created 3 TestUser records.')
             ->assertSuccessful();
 
-        $this->assertDatabaseCount('users', 3);
+        $this->assertSame(3, TestUser::query()->count());
     }
 
     public function test_command_uses_default_count(): void
     {
         $this->artisan('factory:create', [
-            'model' => 'User'
+            'model' => 'TestUser'
         ])
-            ->expectsOutput('Created 1 User record.')
+            ->expectsOutput('Created 1 TestUser record.')
             ->assertSuccessful();
 
-        $this->assertDatabaseCount('users', 1);
+        $this->assertSame(1, TestUser::query()->count());
     }
 
     public function test_command_applies_factory_state(): void
     {
         $this->artisan('factory:create', [
-            'model' => 'User',
+            'model' => 'TestUser',
             '--state' => ['unverified']
         ])->assertSuccessful();
 
-        $user = User::query()->sole();
-
-        $this->assertNull($user->email_verified_at);
+        $this->assertNull(TestUser::query()->sole()->email_verified_at);
     }
 
     public function test_command_applies_attributes(): void
     {
         $this->artisan('factory:create', [
-            'model' => 'User',
+            'model' => 'TestUser',
             '--set' => [
                 'name=a=b',
                 'email=test@example.org',
@@ -56,7 +54,7 @@ class FactoryCreateCommandTest extends TestCase
             ]
         ])->assertSuccessful();
 
-        $user = User::query()->sole();
+        $user = TestUser::query()->sole();
 
         $this->assertSame('a=b', $user->name);
         $this->assertSame('test@example.org', $user->email);
@@ -66,13 +64,13 @@ class FactoryCreateCommandTest extends TestCase
     public function test_command_rejects_count_below_one(): void
     {
         $this->artisan('factory:create', [
-            'model' => 'User',
+            'model' => 'TestUser',
             '--count' => 0
         ])
             ->expectsOutput('Count must be between 1 and 20.')
             ->assertFailed();
 
-        $this->assertDatabaseCount('users', 0);
+        $this->assertSame(0, TestUser::query()->count());
     }
 
     public function test_command_rejects_count_above_configured_limit(): void
@@ -80,13 +78,13 @@ class FactoryCreateCommandTest extends TestCase
         config(['factory-create.max_count' => 2]);
 
         $this->artisan('factory:create', [
-            'model' => 'User',
+            'model' => 'TestUser',
             '--count' => 3
         ])
             ->expectsOutput('Count must be between 1 and 2.')
             ->assertFailed();
 
-        $this->assertDatabaseCount('users', 0);
+        $this->assertSame(0, TestUser::query()->count());
     }
 
     public function test_command_rejects_unknown_model(): void
@@ -101,43 +99,43 @@ class FactoryCreateCommandTest extends TestCase
     public function test_command_rejects_unknown_factory_state(): void
     {
         $this->artisan('factory:create', [
-            'model' => 'User',
+            'model' => 'TestUser',
             '--state' => ['unknown']
         ])
-            ->expectsOutput("Factory state 'unknown' is not found for model 'User'.")
+            ->expectsOutput("Factory state 'unknown' is not found for model 'TestUser'.")
             ->assertFailed();
 
-        $this->assertDatabaseCount('users', 0);
+        $this->assertSame(0, TestUser::query()->count());
     }
 
     public function test_command_rejects_inherited_factory_method_as_state(): void
     {
         $this->artisan('factory:create', [
-            'model' => 'User',
+            'model' => 'TestUser',
             '--state' => ['create']
         ])
-            ->expectsOutput("Factory state 'create' is not found for model 'User'.")
+            ->expectsOutput("Factory state 'create' is not found for model 'TestUser'.")
             ->assertFailed();
 
-        $this->assertDatabaseCount('users', 0);
+        $this->assertSame(0, TestUser::query()->count());
     }
 
     public function test_command_rejects_invalid_attribute_format(): void
     {
         $this->artisan('factory:create', [
-            'model' => 'User',
+            'model' => 'TestUser',
             '--set' => ['invalid-attribute']
         ])
             ->expectsOutput("Attribute 'invalid-attribute' must be of a key=value format.")
             ->assertFailed();
 
-        $this->assertDatabaseCount('users', 0);
+        $this->assertSame(0, TestUser::query()->count());
     }
 
     public function test_command_rejects_duplicate_attributes(): void
     {
         $this->artisan('factory:create', [
-            'model' => 'User',
+            'model' => 'TestUser',
             '--set' => [
                 'name=First name',
                 'name=Second name'
@@ -146,6 +144,6 @@ class FactoryCreateCommandTest extends TestCase
             ->expectsOutput("Attribute 'name' was provided more than once.")
             ->assertFailed();
 
-        $this->assertDatabaseCount('users', 0);
+        $this->assertSame(0, TestUser::query()->count());
     }
 }

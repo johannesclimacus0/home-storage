@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace JohannesClimacus\ArtisanFactory\Commands;
 
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
