@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e91b81b1640019a348f33f9020d657c3",
+    "content-hash": "8580865afc3e3fb77de7761e5166c6f5",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1386,42 +1386,6 @@
                 }
             ],
             "time": "2026-07-17T13:53:03+00:00"
-        },
-        {
-            "name": "johannesclimacus/artisan-factory",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "packages/johannesclimacus/artisan-factory",
-                "reference": "9841bad4fcb75c975da561f79f4c326367f6625b"
-            },
-            "require": {
-                "illuminate/console": "^13.0",
-                "illuminate/database": "^13.0",
-                "illuminate/support": "^13.0",
-                "php": "^8.3"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "JohannesClimacus\\ArtisanFactory\\ArtisanFactoryServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "JohannesClimacus\\ArtisanFactory\\": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Create models from Artisan via factories",
-            "transport-options": {
-                "symlink": true,
-                "relative": true
-            }
         },
         {
             "name": "laravel/fortify",
@@ -8982,6 +8946,53 @@
             "time": "2026-03-17T11:56:53+00:00"
         },
         {
+            "name": "johannesclimacus/artisan-factory",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/johannesclimacus0/artisan-factory.git",
+                "reference": "748e5982d2fc3f6c740a184346eadd504f2c8c82"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/johannesclimacus0/artisan-factory/zipball/748e5982d2fc3f6c740a184346eadd504f2c8c82",
+                "reference": "748e5982d2fc3f6c740a184346eadd504f2c8c82",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^13.0",
+                "illuminate/database": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^11.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JohannesClimacus\\ArtisanFactory\\ArtisanFactoryServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JohannesClimacus\\ArtisanFactory\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Create models from Artisan via factories",
+            "support": {
+                "issues": "https://github.com/johannesclimacus0/artisan-factory/issues",
+                "source": "https://github.com/johannesclimacus0/artisan-factory/tree/v0.1.0"
+            },
+            "time": "2026-08-29T12:07:45+00:00"
+        },
+        {
             "name": "laravel/agent-detector",
             "version": "v2.0.2",
             "source": {
@@ -11515,9 +11526,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "johannesclimacus/artisan-factory": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
