@@ -8,7 +8,7 @@ import { formatDate } from '../lib/format'
 import http from '../lib/http'
 import type { ApiResponse } from '../types/api'
 import type HouseholdMessage from '../types/message'
-import type { BroadcastHouseholdMessage, CursorMessageResponse } from '../types/message'
+import type {BroadcastHouseholdMessage, CursorMessageResponse, MessageDeletedBroadcast, MessageUpdatedBroadcast} from '../types/message'
 
 const { selectedHouseholdUuid, activeHousehold } = useHouseholds()
 const { user } = useAuth()
@@ -140,14 +140,56 @@ function replaceMessage(updatedMessage: HouseholdMessage): void {
     )
 }
 
-async function receiveMessage(message: BroadcastHouseholdMessage): Promise<void> {
-    mergeMessage({
-        ...message,
-        is_mine: message.sender.id === user.value?.id
-    })
+function handleReceivedMessage(
+    receivedMessage: BroadcastHouseholdMessage
+): void {
+    const exists = messages.value.some(
+        message => message.uuid === receivedMessage.uuid
+    )
 
-    await nextTick()
-    scrollToBottom()
+    if (exists) return
+
+    messages.value = [
+        ...messages.value,
+        {
+            ...receivedMessage,
+            is_mine: receivedMessage.sender.id === user.value?.id
+        }
+    ]
+
+    nextTick(scrollToBottom)
+}
+
+function handleUpdatedMessage(
+    updatedMessage: MessageUpdatedBroadcast['message']
+): void {
+    messages.value = messages.value.map(message => {
+        if (message.uuid !== updatedMessage.uuid) {
+            return message
+        }
+
+        return {
+            ...message,
+            content: updatedMessage.content,
+            edited_at: updatedMessage.edited_at
+        }
+    })
+}
+
+function handleDeletedMessage(
+    deletedMessage: MessageDeletedBroadcast['message']
+): void {
+    messages.value = messages.value.map(message => {
+        if (message.uuid !== deletedMessage.uuid) {
+            return message
+        }
+
+        return {
+            ...message,
+            content: null,
+            deleted_at: deletedMessage.deleted_at
+        }
+    })
 }
 
 function mergeMessage(message: HouseholdMessage): void {
@@ -189,7 +231,9 @@ function scrollToBottom(): void {
             v-if="selectedHouseholdUuid !== null"
             :key="selectedHouseholdUuid"
             :household-uuid="selectedHouseholdUuid"
-            @received="receiveMessage"
+            @received="handleReceivedMessage"
+            @updated="handleUpdatedMessage"
+            @deleted="handleDeletedMessage"
         />
 
         <p v-if="pageError" class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -238,10 +282,10 @@ function scrollToBottom(): void {
                                 <p v-if="message.deleted_at" class="text-sm italic opacity-50">Сообщение удалено</p>
 
                                 <form v-else-if="editingUuid === message.uuid" class="space-y-2" @submit.prevent="saveMessage(message.uuid)">
-                                    <textarea v-model="editingContent" maxlength="2000" rows="3" class="w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-950 outline-none"></textarea>
+                                    <textarea v-model="editingContent" maxlength="2000" rows="3" class="w-full rounded border border-slate-600 bg-slate-800 px-2 py-1.5 text-sm text-white outline-none placeholder:text-slate-400 focus:border-slate-400"></textarea>
                                     <div class="flex justify-end gap-3 text-xs">
-                                        <button type="button" class="text-slate-500" @click="cancelEditing">Отмена</button>
-                                        <button type="submit" class="font-medium text-slate-950">Сохранить</button>
+                                        <button type="button" class="text-slate-300 hover:text-white" @click="cancelEditing">Отмена</button>
+                                        <button type="submit" class="rounded bg-white px-2.5 py-1 font-medium text-slate-900 hover:bg-slate-100">Сохранить</button>
                                     </div>
                                 </form>
 

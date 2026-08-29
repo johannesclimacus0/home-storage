@@ -4,6 +4,7 @@ namespace App\Actions\Messages;
 
 use App\Contracts\Households\HouseholdRepository;
 use App\Contracts\Messages\MessageRepository;
+use App\Events\Messages\HouseholdMessageDeleted;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
 
@@ -26,6 +27,8 @@ final readonly class DeleteMessageAction
             }
 
             $this->messages->delete($message);
+
+            HouseholdMessageDeleted::dispatch($message);
         });
     }
 }

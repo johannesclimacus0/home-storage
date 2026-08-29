@@ -28,3 +28,17 @@ export interface CursorMessageResponse {
         next: string | null
     }
 }
+export interface MessageUpdatedBroadcast {
+    message: {
+        uuid: string
+        content: string
+        edited_at: string | null
+    }
+}
+
+export interface MessageDeletedBroadcast {
+    message: {
+        uuid: string
+        deleted_at: string | null
+    }
+}

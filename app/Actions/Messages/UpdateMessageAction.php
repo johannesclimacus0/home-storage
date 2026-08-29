@@ -5,6 +5,7 @@ namespace App\Actions\Messages;
 use App\Contracts\Households\HouseholdRepository;
 use App\Contracts\Messages\MessageRepository;
 use App\DTO\Messages\UpdateMessageData;
+use App\Events\Messages\HouseholdMessageUpdated;
 use App\Models\HouseholdMessage;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +37,9 @@ final readonly class UpdateMessageAction
 
             $this->messages->updateContent($message, $content);
             $message->refresh()->load('sender');
+
+            HouseholdMessageUpdated::dispatch($message);
+
             return $message;
         });
     }
