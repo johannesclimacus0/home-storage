@@ -105,4 +105,34 @@ class EloquentHouseholdMessageRepositoryTest extends TestCase
         ]);
         $this->assertNotNull(HouseholdMessage::withTrashed()->find($message->getKey()));
     }
+
+    public function test_repository_returns_next_cursor_page_without_duplicates(): void
+    {
+        $household = Household::factory()->create();
+        HouseholdMessage::factory()->count(5)->for($household)->create();
+        $repository = app(MessageRepository::class);
+
+        $firstPage = $repository->paginateForHousehold($household, 2);
+        $firstPageIds = collect($firstPage->items())->pluck('id');
+
+        request()->query->set('cursor', $firstPage->nextCursor()?->encode());
+        $secondPage = $repository->paginateForHousehold($household, 2);
+        request()->query->remove('cursor');
+
+        $secondPageIds = collect($secondPage->items())->pluck('id');
+
+        $this->assertCount(2, $secondPage->items());
+        $this->assertTrue($firstPageIds->intersect($secondPageIds)->isEmpty());
+    }
+
+    public function test_repository_eager_loads_sender(): void
+    {
+        $household = Household::factory()->create();
+        HouseholdMessage::factory()->for($household)->create();
+        $repository = app(MessageRepository::class);
+
+        $paginator = $repository->paginateForHousehold($household, 15);
+
+        $this->assertTrue($paginator->items()[0]->relationLoaded('sender'));
+    }
 }
