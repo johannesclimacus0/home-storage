@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Database\Factories\HouseholdProductFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Collection;
@@ -9,23 +10,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property int $household_id
  * @property int $product_id
  * @property numeric $low_stock_threshold
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Carbon\CarbonImmutable|null $low_stock_since
- * @property-read \App\Models\Household $household
- * @property-read Collection<int, \App\Models\LowStockNotificationState> $lowStockNotificationStates
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $low_stock_since
+ * @property-read Household $household
+ * @property-read Collection<int, LowStockNotificationState> $lowStockNotificationStates
  * @property-read int|null $low_stock_notification_states_count
- * @property-read \App\Models\Product $product
- * @property-read Collection<int, \App\Models\StockMovement> $stockMovements
+ * @property-read Product $product
+ * @property-read Collection<int, StockMovement> $stockMovements
  * @property-read int|null $stock_movements_count
- * @property-read Collection<int, \App\Models\Stock> $stocks
+ * @property-read Collection<int, Stock> $stocks
  * @property-read int|null $stocks_count
+ *
  * @method static \Database\Factories\HouseholdProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct newQuery()
@@ -37,6 +40,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct whereLowStockThreshold($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([

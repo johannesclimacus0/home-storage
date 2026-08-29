@@ -19,7 +19,7 @@ class HouseholdMessageControllerTest extends TestCase
 
         $response = $this->actingAs($member)
             ->postJson("/api/households/{$household->uuid}/messages", [
-                'content' => '  Test message  '
+                'content' => '  Test message  ',
             ]);
 
         $response->assertCreated()
@@ -38,7 +38,7 @@ class HouseholdMessageControllerTest extends TestCase
 
         $this->actingAs($member)
             ->patchJson("/api/households/{$household->uuid}/messages/{$messageUuid}", [
-                'content' => 'Edited message'
+                'content' => 'Edited message',
             ])
             ->assertOk()
             ->assertJsonPath('data.content', 'Edited message')
@@ -78,7 +78,7 @@ class HouseholdMessageControllerTest extends TestCase
         $author = User::factory()->create();
         $household->householdMemberships()->create([
             'user_id' => $author->getKey(),
-            'role' => HouseholdRole::Member
+            'role' => HouseholdRole::Member,
         ]);
         $message = HouseholdMessage::factory()
             ->for($household)
@@ -87,7 +87,7 @@ class HouseholdMessageControllerTest extends TestCase
 
         $this->actingAs($member)
             ->patchJson("/api/households/{$household->uuid}/messages/{$message->uuid}", [
-                'content' => 'Changed by another member'
+                'content' => 'Changed by another member',
             ])
             ->assertForbidden();
 
@@ -110,7 +110,7 @@ class HouseholdMessageControllerTest extends TestCase
 
         $this->actingAs($outsider)
             ->postJson("/api/households/{$household->uuid}/messages", [
-                'content' => 'Forbidden message'
+                'content' => 'Forbidden message',
             ])
             ->assertForbidden();
 
@@ -128,7 +128,7 @@ class HouseholdMessageControllerTest extends TestCase
 
         $this->actingAs($member)
             ->postJson("/api/households/{$household->uuid}/messages", [
-                'content' => str_repeat('a', 2001)
+                'content' => str_repeat('a', 2001),
             ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('content');
@@ -140,7 +140,7 @@ class HouseholdMessageControllerTest extends TestCase
         $member = User::factory()->create();
         $household->householdMemberships()->create([
             'user_id' => $member->getKey(),
-            'role' => HouseholdRole::Member
+            'role' => HouseholdRole::Member,
         ]);
 
         return [$household, $member];

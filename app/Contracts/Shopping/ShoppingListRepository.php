@@ -15,6 +15,7 @@ interface ShoppingListRepository
      * @return Collection<int, ShoppingListItem>
      */
     public function itemsForHousehold(Household $household): Collection;
+
     public function findForHousehold(
         Household $household,
         string $itemUuid

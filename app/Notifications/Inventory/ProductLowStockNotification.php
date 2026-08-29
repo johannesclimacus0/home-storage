@@ -41,7 +41,6 @@ class ProductLowStockNotification extends Notification implements ShouldQueue
         return ['database', 'broadcast'];
     }
 
-
     public function toArray(object $notifiable): array
     {
         return [

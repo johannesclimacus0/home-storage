@@ -15,6 +15,6 @@ final class VerifyEmailNotification extends VerifyEmail
             ->line(__('messages.mail.verify.intro'))
             ->action(__('messages.mail.verify.action'), $url)
             ->line(__('messages.mail.verify.outro'))
-            ->salutation(__('messages.mail.salutation').' '.config('app.name'));
+            ->salutation(__('messages.mail.salutation') . ' ' . config('app.name'));
     }
 }

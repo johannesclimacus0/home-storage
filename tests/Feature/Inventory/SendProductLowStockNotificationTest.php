@@ -57,8 +57,7 @@ final class SendProductLowStockNotificationTest extends TestCase
         Queue::assertPushed(SendQueuedNotifications::class, 4);
         Queue::assertPushed(
             SendQueuedNotifications::class,
-            fn (SendQueuedNotifications $job): bool =>
-                $job->notification instanceof ProductLowStockNotification
+            fn (SendQueuedNotifications $job): bool => $job->notification instanceof ProductLowStockNotification
                 && in_array($job->channels, [['database'], ['broadcast']], true)
                 && $job->queue === 'notifications'
                 && $job->tries === 3
@@ -69,8 +68,7 @@ final class SendProductLowStockNotificationTest extends TestCase
         );
         Queue::assertPushed(
             SendQueuedNotifications::class,
-            fn (SendQueuedNotifications $job): bool =>
-                $job->notification instanceof ProductLowStockNotification
+            fn (SendQueuedNotifications $job): bool => $job->notification instanceof ProductLowStockNotification
                 && in_array($job->channels, [['database'], ['broadcast']], true)
                 && $job->queue === 'notifications'
                 && $job->tries === 3

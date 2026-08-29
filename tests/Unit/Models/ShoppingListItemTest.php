@@ -16,7 +16,7 @@ class ShoppingListItemTest extends TestCase
 
     public function test_shopping_list_item_has_expected_relationships_and_casts(): void
     {
-        $shoppingListItem = ShoppingListItem::factory()->create(['quantity' => 2,]);
+        $shoppingListItem = ShoppingListItem::factory()->create(['quantity' => 2]);
 
         $this->assertInstanceOf(Household::class, $shoppingListItem->household);
         $this->assertInstanceOf(Product::class, $shoppingListItem->product);
@@ -24,6 +24,7 @@ class ShoppingListItemTest extends TestCase
         $this->assertSame('2.000', $shoppingListItem->quantity);
         $this->assertNull($shoppingListItem->completed_at);
     }
+
     public function test_completed_factory_state_sets_completion_date(): void
     {
         $shoppingListItem = ShoppingListItem::factory()

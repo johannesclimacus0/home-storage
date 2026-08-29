@@ -20,8 +20,8 @@ use App\Http\Requests\Shopping\StoreShoppingListItemRequest;
 use App\Http\Requests\Shopping\UpdateShoppingListItemRequest;
 use App\Http\Resources\ShoppingListItemResource;
 use App\Models\Household;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 
 final class ShoppingListItemController extends Controller

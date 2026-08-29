@@ -49,7 +49,7 @@ class MessageActionsTest extends TestCase
             'id' => $message->getKey(),
             'household_id' => $household->getKey(),
             'sender_id' => $sender->getKey(),
-            'content' => 'Test message'
+            'content' => 'Test message',
         ]);
 
         Event::assertDispatched(
@@ -85,7 +85,7 @@ class MessageActionsTest extends TestCase
         $this->assertSame('Test message', $message->content);
         $this->assertDatabaseHas('household_messages', [
             'id' => $message->getKey(),
-            'content' => 'Test message'
+            'content' => 'Test message',
         ]);
     }
 
@@ -149,7 +149,7 @@ class MessageActionsTest extends TestCase
             ->for($household)
             ->for($sender, 'sender')
             ->create([
-                'content' => 'Test message'
+                'content' => 'Test message',
             ]);
 
         $data = new UpdateMessageData(
@@ -165,7 +165,7 @@ class MessageActionsTest extends TestCase
             'id' => $message->getKey(),
             'household_id' => $household->getKey(),
             'sender_id' => $sender->getKey(),
-            'content' => 'Updated message'
+            'content' => 'Updated message',
         ]);
 
         $this->assertSame('Updated message', $updatedMessage->content);
@@ -182,6 +182,7 @@ class MessageActionsTest extends TestCase
 
         Event::assertDispatchedTimes(HouseholdMessageUpdated::class, 1);
     }
+
     public function test_deleting_message_dispatches_household_message_deleted_event(): void
     {
         Event::fake([HouseholdMessageDeleted::class]);
@@ -197,7 +198,7 @@ class MessageActionsTest extends TestCase
             ->for($household)
             ->for($sender, 'sender')
             ->create([
-                'content' => 'Test message'
+                'content' => 'Test message',
             ]);
 
         app(DeleteMessageAction::class)->handle(
@@ -210,7 +211,7 @@ class MessageActionsTest extends TestCase
             'id' => $message->getKey(),
             'household_id' => $household->getKey(),
             'sender_id' => $sender->getKey(),
-            'content' => 'Test message'
+            'content' => 'Test message',
         ]);
 
         Event::assertDispatched(
@@ -241,7 +242,7 @@ class MessageActionsTest extends TestCase
             ->for($household)
             ->for($sender, 'sender')
             ->create([
-                'content' => 'Original message'
+                'content' => 'Original message',
             ]);
 
         $this->expectException(InvalidArgumentException::class);
@@ -259,7 +260,7 @@ class MessageActionsTest extends TestCase
             $this->assertDatabaseHas('household_messages', [
                 'id' => $message->getKey(),
                 'content' => 'Original message',
-                'edited_at' => null
+                'edited_at' => null,
             ]);
             Event::assertNotDispatched(HouseholdMessageUpdated::class);
         }
@@ -286,7 +287,7 @@ class MessageActionsTest extends TestCase
             ->for($household)
             ->for($sender, 'sender')
             ->create([
-                'content' => 'Original message'
+                'content' => 'Original message',
             ]);
 
         $this->expectException(AuthorizationException::class);
@@ -304,7 +305,7 @@ class MessageActionsTest extends TestCase
             $this->assertDatabaseHas('household_messages', [
                 'id' => $message->getKey(),
                 'content' => 'Original message',
-                'edited_at' => null
+                'edited_at' => null,
             ]);
             Event::assertNotDispatched(HouseholdMessageUpdated::class);
         }
@@ -343,7 +344,7 @@ class MessageActionsTest extends TestCase
         } finally {
             $this->assertDatabaseHas('household_messages', [
                 'id' => $message->getKey(),
-                'deleted_at' => null
+                'deleted_at' => null,
             ]);
             Event::assertNotDispatched(HouseholdMessageDeleted::class);
         }

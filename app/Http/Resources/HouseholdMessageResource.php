@@ -14,12 +14,12 @@ final class HouseholdMessageResource extends JsonResource
             'content' => $this->trashed() ? null : $this->content,
             'sender' => [
                 'id' => $this->sender->getKey(),
-                'name' => $this->sender->name
+                'name' => $this->sender->name,
             ],
             'is_mine' => $request->user()?->getKey() === $this->sender_id,
             'edited_at' => $this->edited_at?->toISOString(),
             'deleted_at' => $this->deleted_at?->toISOString(),
-            'created_at' => $this->created_at?->toISOString()
+            'created_at' => $this->created_at?->toISOString(),
         ];
     }
 }

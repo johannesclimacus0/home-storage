@@ -16,8 +16,8 @@ use App\Repositories\EloquentInventoryRepository;
 use App\Repositories\EloquentLowStockReminderRepository;
 use App\Repositories\EloquentNotificationRepository;
 use App\Repositories\EloquentProductRepository;
-use App\Repositories\EloquentStockMovementRepository;
 use App\Repositories\EloquentShoppingListRepository;
+use App\Repositories\EloquentStockMovementRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

@@ -39,7 +39,7 @@ class HouseholdMessageSentTest extends TestCase
     {
         $sender = User::factory()->create([
             'name' => 'Test Name',
-            'email' => 'sender@example.test'
+            'email' => 'sender@example.test',
         ]);
         $message = HouseholdMessage::factory()
             ->for($sender, 'sender')

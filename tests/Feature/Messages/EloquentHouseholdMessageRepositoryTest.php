@@ -29,7 +29,7 @@ class EloquentHouseholdMessageRepositoryTest extends TestCase
             'id' => $message->getKey(),
             'household_id' => $household->getKey(),
             'sender_id' => $sender->getKey(),
-            'content' => 'Test message'
+            'content' => 'Test message',
         ]);
     }
 
@@ -101,7 +101,7 @@ class EloquentHouseholdMessageRepositoryTest extends TestCase
 
         $this->assertTrue($message->trashed());
         $this->assertSoftDeleted('household_messages', [
-            'id' => $message->getKey()
+            'id' => $message->getKey(),
         ]);
         $this->assertNotNull(HouseholdMessage::withTrashed()->find($message->getKey()));
     }

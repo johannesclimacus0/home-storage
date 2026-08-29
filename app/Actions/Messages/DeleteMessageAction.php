@@ -23,7 +23,7 @@ final readonly class DeleteMessageAction
             $message = $this->messages->findForHouseholdForUpdate($household, $messageUuid);
 
             if ($message->sender_id !== $actorUserId) {
-                throw new AuthorizationException();
+                throw new AuthorizationException;
             }
 
             $this->messages->delete($message);

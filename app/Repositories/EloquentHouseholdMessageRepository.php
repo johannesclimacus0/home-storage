@@ -22,7 +22,8 @@ final class EloquentHouseholdMessageRepository implements MessageRepository
         ]);
     }
 
-    public function paginateForHousehold(Household $household, int $perPage): CursorPaginator {
+    public function paginateForHousehold(Household $household, int $perPage): CursorPaginator
+    {
         return $household->messages()
             ->withTrashed()
             ->with('sender')
@@ -30,7 +31,8 @@ final class EloquentHouseholdMessageRepository implements MessageRepository
             ->cursorPaginate($perPage);
     }
 
-    public function findForHousehold(Household $household, string $messageUuid): HouseholdMessage {
+    public function findForHousehold(Household $household, string $messageUuid): HouseholdMessage
+    {
         return $household->messages()
             ->where('uuid', $messageUuid)
             ->with('sender')
@@ -46,7 +48,8 @@ final class EloquentHouseholdMessageRepository implements MessageRepository
             ->firstOrFail();
     }
 
-    public function updateContent(HouseholdMessage $message, string $content): void {
+    public function updateContent(HouseholdMessage $message, string $content): void
+    {
         $message->updateOrFail([
             'content' => $content,
             'edited_at' => CarbonImmutable::now(),

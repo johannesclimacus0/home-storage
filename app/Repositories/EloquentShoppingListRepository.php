@@ -12,7 +12,6 @@ use Illuminate\Support\Collection;
 
 final class EloquentShoppingListRepository implements ShoppingListRepository
 {
-
     public function itemsForHousehold(Household $household): Collection
     {
         return $household->shoppingListItems()
@@ -41,7 +40,8 @@ final class EloquentShoppingListRepository implements ShoppingListRepository
             ->firstOrFail();
     }
 
-    public function findByProductForUpdate(Household $household, Product $product): ?ShoppingListItem {
+    public function findByProductForUpdate(Household $household, Product $product): ?ShoppingListItem
+    {
         return $household->shoppingListItems()
             ->where('product_id', $product->getKey())
             ->lockForUpdate()

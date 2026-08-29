@@ -31,19 +31,19 @@ final class SendDueLowStockRemindersActionTest extends TestCase
             ->for($user)
             ->create([
                 'low_stock_reminders_enabled' => true,
-                'low_stock_reminder_interval_hours' => 24
+                'low_stock_reminder_interval_hours' => 24,
             ]);
         $product = Product::factory()->volume()->create();
         $householdProduct = HouseholdProduct::factory()
             ->for($household)
             ->for($product)
             ->create([
-                'low_stock_since' => $now->subDays(2)
+                'low_stock_since' => $now->subDays(2),
             ]);
         $state = LowStockNotificationState::factory()->create([
             'household_membership_id' => $membership->getKey(),
             'household_product_id' => $householdProduct->getKey(),
-            'last_notified_at' => $now->subHours(25)
+            'last_notified_at' => $now->subHours(25),
         ]);
 
         $sentCount = app(SendDueLowStockRemindersAction::class)->handle($now);

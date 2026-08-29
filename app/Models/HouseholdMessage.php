@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Traits\HasUuidRouteKey;
+use Carbon\CarbonImmutable;
+use Database\Factories\HouseholdMessageFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -15,12 +18,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $household_id
  * @property int $sender_id
  * @property string $content
- * @property \Carbon\CarbonImmutable|null $edited_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Carbon\CarbonImmutable|null $deleted_at
- * @property-read \App\Models\Household $household
- * @property-read \App\Models\User $sender
+ * @property CarbonImmutable|null $edited_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $deleted_at
+ * @property-read Household $household
+ * @property-read User $sender
+ *
  * @method static \Database\Factories\HouseholdMessageFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage newQuery()
@@ -37,6 +41,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage whereUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -47,7 +52,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 ])]
 class HouseholdMessage extends Model
 {
-    /** @use HasFactory<\Database\Factories\HouseholdMessageFactory> */
+    /** @use HasFactory<HouseholdMessageFactory> */
     use HasFactory, HasUuidRouteKey, SoftDeletes;
 
     protected $casts = [

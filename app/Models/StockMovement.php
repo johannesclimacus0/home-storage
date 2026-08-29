@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -28,13 +29,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $product_name
  * @property string $storage_location_name
  * @property string $actor_name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $actor
- * @property-read \App\Models\Household $household
- * @property-read \App\Models\HouseholdProduct|null $householdProduct
- * @property-read \App\Models\Product $product
- * @property-read \App\Models\StorageLocation|null $storageLocation
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User|null $actor
+ * @property-read Household $household
+ * @property-read HouseholdProduct|null $householdProduct
+ * @property-read Product $product
+ * @property-read StorageLocation|null $storageLocation
+ *
  * @method static \Database\Factories\StockMovementFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement newQuery()
@@ -57,6 +59,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockMovement whereUuid($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([

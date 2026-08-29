@@ -32,7 +32,7 @@ final readonly class UpdateMessageAction
             $message = $this->messages->findForHouseholdForUpdate($household, $data->messageUuid);
 
             if ($message->sender_id !== $data->actorUserId) {
-                throw new AuthorizationException();
+                throw new AuthorizationException;
             }
 
             $this->messages->updateContent($message, $content);

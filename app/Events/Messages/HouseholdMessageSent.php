@@ -9,19 +9,18 @@ use Illuminate\Contracts\Events\ShouldDispatchAfterCommit;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-final class HouseholdMessageSent implements ShouldDispatchAfterCommit, ShouldBroadcast
+final class HouseholdMessageSent implements ShouldBroadcast, ShouldDispatchAfterCommit
 {
     use Dispatchable, SerializesModels;
 
     public function __construct(
         public readonly HouseholdMessage $message
-    )
-    {}
+    ) {}
 
     public function broadcastOn(): PrivateChannel
     {
         return new PrivateChannel(
-            'households.'.$this->message->household->uuid
+            'households.' . $this->message->household->uuid
         );
     }
 

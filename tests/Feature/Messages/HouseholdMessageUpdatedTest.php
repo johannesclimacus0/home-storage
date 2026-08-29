@@ -40,13 +40,13 @@ class HouseholdMessageUpdatedTest extends TestCase
     {
         $sender = User::factory()->create([
             'name' => 'Test Name',
-            'email' => 'sender@example.test'
+            'email' => 'sender@example.test',
         ]);
         $message = HouseholdMessage::factory()
             ->for($sender, 'sender')
             ->create([
                 'content' => 'Test message',
-                'edited_at' => CarbonImmutable::parse('2026-08-29 14:00:00')
+                'edited_at' => CarbonImmutable::parse('2026-08-29 14:00:00'),
             ]);
 
         $event = new HouseholdMessageUpdated($message);

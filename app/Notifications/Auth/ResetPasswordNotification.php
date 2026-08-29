@@ -9,7 +9,7 @@ final class ResetPasswordNotification extends ResetPassword
 {
     protected function buildMailMessage($url): MailMessage
     {
-        $expire = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
+        $expire = config('auth.passwords.' . config('auth.defaults.passwords') . '.expire');
 
         return new MailMessage()
             ->subject(__('messages.mail.password_reset.subject'))
@@ -18,6 +18,6 @@ final class ResetPasswordNotification extends ResetPassword
             ->action(__('messages.mail.password_reset.action'), $url)
             ->line(__('messages.mail.password_reset.expires', ['count' => $expire]))
             ->line(__('messages.mail.password_reset.outro'))
-            ->salutation(__('messages.mail.salutation').' '.config('app.name'));
+            ->salutation(__('messages.mail.salutation') . ' ' . config('app.name'));
     }
 }

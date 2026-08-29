@@ -31,14 +31,14 @@ class HouseholdMessageFactory extends Factory
 
     public function edited(): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'edited_at' => now(),
         ]);
     }
 
     public function deleted(): static
     {
-        return $this->state(fn() => [
+        return $this->state(fn () => [
             'deleted_at' => now(),
         ]);
     }

@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Traits\HasUuidRouteKey;
+use Carbon\CarbonImmutable;
+use Database\Factories\ShoppingListItemFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -15,12 +18,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $product_id
  * @property int $added_by_user_id
  * @property numeric $quantity
- * @property \Carbon\CarbonImmutable|null $completed_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User $addedBy
- * @property-read \App\Models\Household $household
- * @property-read \App\Models\Product $product
+ * @property CarbonImmutable|null $completed_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User $addedBy
+ * @property-read Household $household
+ * @property-read Product $product
+ *
  * @method static \Database\Factories\ShoppingListItemFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem newQuery()
@@ -34,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem whereUuid($value)
+ *
  * @mixin \Eloquent
  */
 #[Fillable([
@@ -42,16 +47,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'product_id',
     'added_by_user_id',
     'quantity',
-    'completed_at'
+    'completed_at',
 ])]
 class ShoppingListItem extends Model
 {
-    /** @use HasFactory<\Database\Factories\ShoppingListItemFactory> */
+    /** @use HasFactory<ShoppingListItemFactory> */
     use HasFactory, HasUuidRouteKey;
 
     protected $casts = [
         'quantity' => 'decimal:3',
-        'completed_at' => 'immutable_datetime'
+        'completed_at' => 'immutable_datetime',
     ];
 
     public function household(): BelongsTo

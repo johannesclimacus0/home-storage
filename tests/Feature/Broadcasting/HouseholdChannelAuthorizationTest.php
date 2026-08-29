@@ -21,7 +21,7 @@ class HouseholdChannelAuthorizationTest extends TestCase
             'broadcasting.default' => 'reverb',
             'broadcasting.connections.reverb.key' => 'test-key',
             'broadcasting.connections.reverb.secret' => 'test-secret',
-            'broadcasting.connections.reverb.app_id' => 'test-app-id'
+            'broadcasting.connections.reverb.app_id' => 'test-app-id',
         ]);
 
         Broadcast::purge('reverb');
@@ -42,7 +42,7 @@ class HouseholdChannelAuthorizationTest extends TestCase
 
         $response = $this->actingAs($member)->postJson('/broadcasting/auth', [
             'socket_id' => '1234.5678',
-            'channel_name' => 'private-households.'.$household->uuid
+            'channel_name' => 'private-households.' . $household->uuid,
         ]);
 
         $response->assertOk();
@@ -57,7 +57,7 @@ class HouseholdChannelAuthorizationTest extends TestCase
         $this->actingAs($outsider)
             ->postJson('/broadcasting/auth', [
                 'socket_id' => '1234.5678',
-                'channel_name' => 'private-households.'.$household->uuid
+                'channel_name' => 'private-households.' . $household->uuid,
             ])
             ->assertForbidden();
     }
@@ -68,7 +68,7 @@ class HouseholdChannelAuthorizationTest extends TestCase
 
         $this->postJson('/broadcasting/auth', [
             'socket_id' => '1234.5678',
-            'channel_name' => 'private-households.'.$household->uuid
+            'channel_name' => 'private-households.' . $household->uuid,
         ])->assertForbidden();
     }
 }

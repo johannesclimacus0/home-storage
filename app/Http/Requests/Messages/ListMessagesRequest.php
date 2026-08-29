@@ -19,7 +19,7 @@ final class ListMessagesRequest extends FormRequest
     {
         return [
             'per_page' => 'nullable|integer|min:1|max:100',
-            'cursor' => 'nullable|string'
+            'cursor' => 'nullable|string',
         ];
     }
 }
