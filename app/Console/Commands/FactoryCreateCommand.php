@@ -24,7 +24,10 @@ class FactoryCreateCommand extends Command
     public function handle(): int
     {
         $modelName = (string) $this->argument('model');
-        $modelClass = "App\\Models\\{$modelName}";
+        $modelNamespace = (string) config('factory-create.model_namespace',
+            'App\\Models'
+        );
+        $modelClass = $modelNamespace . '\\' .$modelName;
 
         $attributeOptions = (array) $this->option('set');
 
@@ -71,9 +74,7 @@ class FactoryCreateCommand extends Command
                 $result = $factory->{$state}();
 
                 if (!$result instanceof Factory) {
-                    $this->error(
-                        "Factory state '{$state}' must return a factory instance."
-                    );
+                    $this->error("Factory state '{$state}' must return a factory instance.");
 
                     return self::FAILURE;
                 }
