@@ -20,15 +20,14 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property CarbonImmutable|null $low_stock_since
- * @property-read Household $household
- * @property-read Collection<int, LowStockNotificationState> $lowStockNotificationStates
+ * @property-read \App\Models\Household $household
+ * @property-read Collection<int, \App\Models\LowStockNotificationState> $lowStockNotificationStates
  * @property-read int|null $low_stock_notification_states_count
- * @property-read Product $product
- * @property-read Collection<int, StockMovement> $stockMovements
+ * @property-read \App\Models\Product $product
+ * @property-read Collection<int, \App\Models\StockMovement> $stockMovements
  * @property-read int|null $stock_movements_count
- * @property-read Collection<int, Stock> $stocks
+ * @property-read Collection<int, \App\Models\Stock> $stocks
  * @property-read int|null $stocks_count
- *
  * @method static \Database\Factories\HouseholdProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct newQuery()
@@ -40,7 +39,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct whereLowStockThreshold($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdProduct whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

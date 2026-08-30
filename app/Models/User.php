@@ -28,19 +28,20 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, HouseholdMembership> $householdMemberships
+ * @property-read Collection<int, \App\Models\HouseholdMembership> $householdMemberships
  * @property-read int|null $household_memberships_count
- * @property-read Collection<int, HouseholdMessage> $messages
+ * @property-read Collection<int, \App\Models\HouseholdMessage> $messages
  * @property-read int|null $messages_count
  * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
- * @property-read Collection<int, ShoppingListItem> $shoppingListItems
+ * @property-read Collection<int, \App\Models\Recipe> $recipes
+ * @property-read int|null $recipes_count
+ * @property-read Collection<int, \App\Models\ShoppingListItem> $shoppingListItems
  * @property-read int|null $shopping_list_items_count
- * @property-read Collection<int, StockMovement> $stockMovements
+ * @property-read Collection<int, \App\Models\StockMovement> $stockMovements
  * @property-read int|null $stock_movements_count
  * @property-read Collection<int, PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
- *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
@@ -53,7 +54,6 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable(['name', 'email', 'password'])]
@@ -96,5 +96,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function messages(): HasMany
     {
         return $this->hasMany(HouseholdMessage::class, 'sender_id');
+    }
+
+    public function recipes(): HasMany
+    {
+        return $this->hasMany(Recipe::class, 'created_by_user_id');
     }
 }

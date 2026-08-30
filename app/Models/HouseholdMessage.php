@@ -22,9 +22,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property CarbonImmutable|null $deleted_at
- * @property-read Household $household
- * @property-read User $sender
- *
+ * @property-read \App\Models\Household $household
+ * @property-read \App\Models\User $sender
  * @method static \Database\Factories\HouseholdMessageFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage newQuery()
@@ -41,7 +40,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage whereUuid($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage withTrashed(bool $withTrashed = true)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|HouseholdMessage withoutTrashed()
- *
  * @mixin \Eloquent
  */
 #[Fillable([

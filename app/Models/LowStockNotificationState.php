@@ -16,9 +16,8 @@ use Illuminate\Support\Carbon;
  * @property CarbonImmutable $last_notified_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read HouseholdMembership $householdMembership
- * @property-read HouseholdProduct $householdProduct
- *
+ * @property-read \App\Models\HouseholdMembership $householdMembership
+ * @property-read \App\Models\HouseholdProduct $householdProduct
  * @method static \Database\Factories\LowStockNotificationStateFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LowStockNotificationState newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LowStockNotificationState newQuery()
@@ -29,7 +28,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LowStockNotificationState whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LowStockNotificationState whereLastNotifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|LowStockNotificationState whereUpdatedAt($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable(['household_membership_id', 'household_product_id', 'last_notified_at'])]

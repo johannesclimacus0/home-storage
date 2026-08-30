@@ -8,6 +8,11 @@ return [
     'shopping' => [
         'already_completed' => 'Товар в списке покупок уже отмечен выполненным.',
     ],
+    'recipes' => [
+        'ingredient_duplicate' => 'Этот продукт уже используется в рецепте.',
+        'ingredient_quantity_positive' => 'Количество ингредиента должно быть больше нуля.',
+        'step_description_required' => 'Описание шага рецепта не может быть пустым.',
+    ],
     'storage_locations' => [
         'name_required' => 'Название места хранения не может быть пустым.',
         'contains_stock' => 'Нельзя удалить место хранения, пока в нём есть запасы.',

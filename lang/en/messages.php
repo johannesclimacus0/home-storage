@@ -8,6 +8,11 @@ return [
     'shopping' => [
         'already_completed' => 'The shopping list item is already completed.',
     ],
+    'recipes' => [
+        'ingredient_duplicate' => 'This product is already used in the recipe.',
+        'ingredient_quantity_positive' => 'The ingredient quantity must be greater than zero.',
+        'step_description_required' => 'The recipe step description cannot be empty.',
+    ],
     'storage_locations' => [
         'name_required' => 'The storage location name cannot be empty.',
         'contains_stock' => 'Storage location contains stock and cannot be deleted.',

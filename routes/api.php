@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\LowStockProductController;
 use App\Http\Controllers\Api\LowStockReminderSettingController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\RecipeController;
+use App\Http\Controllers\Api\RecipeIngredientController;
+use App\Http\Controllers\Api\RecipeStepController;
 use App\Http\Controllers\Api\ShoppingListItemController;
 use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\StockMovementController;
@@ -54,6 +57,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::apiResource('products', ProductController::class)
         ->only(['index', 'store', 'show'])
         ->parameters(['products' => 'product']);
+
+    Route::apiResource('recipes', RecipeController::class);
+    Route::apiResource('recipes.ingredients', RecipeIngredientController::class)
+        ->only(['store', 'update', 'destroy']);
+    Route::apiResource('recipes.steps', RecipeStepController::class)
+        ->only(['store', 'update', 'destroy']);
 
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);

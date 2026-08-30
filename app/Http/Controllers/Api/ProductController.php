@@ -34,7 +34,7 @@ final class ProductController extends Controller
             measurementType: MeasurementType::from($request->validated('measurement_type')),
         ));
 
-        return (new ProductResource($product))
+        return new ProductResource($product)
             ->response()
             ->setStatusCode(201);
     }

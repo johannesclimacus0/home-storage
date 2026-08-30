@@ -21,10 +21,9 @@ use Illuminate\Support\Carbon;
  * @property CarbonImmutable|null $completed_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read User $addedBy
- * @property-read Household $household
- * @property-read Product $product
- *
+ * @property-read \App\Models\User $addedBy
+ * @property-read \App\Models\Household $household
+ * @property-read \App\Models\Product $product
  * @method static \Database\Factories\ShoppingListItemFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem newQuery()
@@ -38,7 +37,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem whereQuantity($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShoppingListItem whereUuid($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable([

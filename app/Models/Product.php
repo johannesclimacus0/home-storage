@@ -19,13 +19,14 @@ use Illuminate\Support\Carbon;
  * @property MeasurementType $measurement_type
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, HouseholdProduct> $householdProducts
+ * @property-read Collection<int, \App\Models\HouseholdProduct> $householdProducts
  * @property-read int|null $household_products_count
- * @property-read Collection<int, ShoppingListItem> $shoppingListItems
+ * @property-read Collection<int, \App\Models\RecipeIngredient> $recipeIngredients
+ * @property-read int|null $recipe_ingredients_count
+ * @property-read Collection<int, \App\Models\ShoppingListItem> $shoppingListItems
  * @property-read int|null $shopping_list_items_count
- * @property-read Collection<int, StockMovement> $stockMovements
+ * @property-read Collection<int, \App\Models\StockMovement> $stockMovements
  * @property-read int|null $stock_movements_count
- *
  * @method static \Database\Factories\ProductFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
@@ -36,7 +37,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUuid($value)
- *
  * @mixin \Eloquent
  */
 #[Fillable(['name', 'measurement_type'])]
@@ -62,5 +62,10 @@ class Product extends Model
     public function shoppingListItems(): HasMany
     {
         return $this->hasMany(ShoppingListItem::class);
+    }
+
+    public function recipeIngredients(): HasMany
+    {
+        return $this->hasMany(RecipeIngredient::class);
     }
 }
