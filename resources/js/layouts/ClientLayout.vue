@@ -72,6 +72,13 @@ async function handleLogout() {
                         Покупки
                     </RouterLink>
                     <RouterLink
+                        :to="{ name: 'recipes' }"
+                        class="whitespace-nowrap rounded-md px-3 py-1.5 text-sm text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                        active-class="bg-slate-100 text-slate-950"
+                    >
+                        Рецепты
+                    </RouterLink>
+                    <RouterLink
                         :to="{ name: 'household-chat' }"
                         class="whitespace-nowrap rounded-md px-3 py-1.5 text-sm text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                         active-class="bg-slate-100 text-slate-950"

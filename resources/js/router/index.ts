@@ -14,6 +14,9 @@ import RegisterView from '../views/RegisterView.vue'
 import ForgotPasswordView from '../views/ForgotPasswordView.vue'
 import ResetPasswordView from '../views/ResetPasswordView.vue'
 import HouseholdChatView from '../views/HouseholdChatView.vue'
+import RecipeListView from '../views/RecipeListView.vue'
+import RecipeDetailView from '../views/RecipeDetailView.vue'
+import RecipeFormView from '../views/RecipeFormView.vue'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -70,6 +73,10 @@ const router = createRouter({
                 { path: 'households', name: 'household-settings', component: HouseholdSettingsView },
                 { path: 'notifications', name: 'notifications', component: NotificationsView },
                 { path: 'chat', name: 'household-chat', component: HouseholdChatView },
+                { path: 'recipes', name: 'recipes', component: RecipeListView },
+                { path: 'recipes/new', name: 'recipe-create', component: RecipeFormView },
+                { path: 'recipes/:recipeUuid', name: 'recipe-show', component: RecipeDetailView },
+                { path: 'recipes/:recipeUuid/edit', name: 'recipe-edit', component: RecipeFormView },
             ],
         },
     ],
