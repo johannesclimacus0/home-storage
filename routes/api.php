@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\HouseholdController;
 use App\Http\Controllers\Api\HouseholdMessageController;
 use App\Http\Controllers\Api\HouseholdProductController;
+use App\Http\Controllers\Api\HouseholdRecipeController;
 use App\Http\Controllers\Api\LowStockProductController;
 use App\Http\Controllers\Api\LowStockReminderSettingController;
 use App\Http\Controllers\Api\NotificationController;
@@ -54,6 +55,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/households/{household}/messages', [HouseholdMessageController::class, 'store']);
     Route::patch('/households/{household}/messages/{message}', [HouseholdMessageController::class, 'update']);
     Route::delete('/households/{household}/messages/{message}', [HouseholdMessageController::class, 'destroy']);
+
+    Route::get('/households/{household}/recipes', [HouseholdRecipeController::class, 'index']);
+    Route::get('/households/{household}/recipes/{recipe}/availability', [HouseholdRecipeController::class, 'show']);
+    Route::post('/households/{household}/recipes/{recipe}/shopping-list-items', [HouseholdRecipeController::class, 'addMissingToShoppingList']);
 
     Route::apiResource('products', ProductController::class)
         ->only(['index', 'store', 'show'])

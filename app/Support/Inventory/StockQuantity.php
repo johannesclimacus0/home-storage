@@ -53,6 +53,15 @@ final class StockQuantity
         return (int) ($whole . $fraction);
     }
 
+    public static function fromMinorUnits(int $value): string
+    {
+        if ($value < 0) {
+            throw new InvalidStockQuantity(__('messages.inventory.quantity_negative'));
+        }
+
+        return intdiv($value, 1000) . '.' . str_pad((string) ($value % 1000), 3, '0', STR_PAD_LEFT);
+    }
+
     private static function parts(string $value): array
     {
         $value = trim($value);

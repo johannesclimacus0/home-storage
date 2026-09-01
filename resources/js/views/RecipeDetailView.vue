@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ModalDialog from '../components/ui/ModalDialog.vue'
 import PaginationNav from '../components/ui/PaginationNav.vue'
 import { useAuth } from '../composables/useAuth'
+import { useHouseholds } from '../composables/useHouseholds'
 import http from '../lib/http'
 import { errorMessage, validationErrors } from '../lib/apiError'
 import { formatDate, formatQuantity, measurementUnitLabel } from '../lib/format'
@@ -11,6 +12,7 @@ import type { ApiResponse, PaginatedResponse, PaginationMeta, ValidationErrors }
 import type { CatalogProduct, MeasurementType, MeasurementUnit } from '../types/inventory'
 import type {
     Recipe,
+    RecipeAvailability,
     RecipeIngredient,
     RecipeIngredientPayload,
     RecipeStep,
@@ -20,7 +22,10 @@ import type RecipeNote from '../types/note'
 const route = useRoute()
 const router = useRouter()
 const { user } = useAuth()
+const { selectedHouseholdUuid, fetchHouseholds } = useHouseholds()
 const recipe = ref<Recipe | null>(null)
+const availability = ref<RecipeAvailability | null>(null)
+const shoppingListMessage = ref<string | null>(null)
 const products = ref<CatalogProduct[]>([])
 const pageError = ref<string | null>(null)
 const formError = ref<string | null>(null)
@@ -65,8 +70,46 @@ const selectedProduct = computed(() =>
 const ingredientUnits = computed(() => unitsFor(selectedProduct.value?.measurement_type ?? 'count'))
 
 onMounted(async () => {
-    await Promise.all([loadRecipe(), loadProducts(), loadNotes()])
+    await fetchHouseholds()
+    await Promise.all([loadRecipe(), loadProducts(), loadNotes(), loadAvailability()])
 })
+
+watch(selectedHouseholdUuid, () => loadAvailability())
+
+async function loadAvailability(): Promise<void> {
+    shoppingListMessage.value = null
+
+    if (selectedHouseholdUuid.value === null) {
+        availability.value = null
+        return
+    }
+
+    try {
+        const response = await http.get<ApiResponse<RecipeAvailability>>(
+            `/api/households/${selectedHouseholdUuid.value}/recipes/${recipeUuid.value}/availability`
+        )
+        availability.value = response.data.data
+    } catch (requestError: unknown) {
+        availability.value = null
+        pageError.value = errorMessage(requestError, 'Не удалось проверить наличие продуктов.')
+    }
+}
+
+async function addMissingToShoppingList(): Promise<void> {
+    if (selectedHouseholdUuid.value === null || availability.value?.can_make) return
+
+    try {
+        const response = await http.post<{ data: unknown[] }>(
+            `/api/households/${selectedHouseholdUuid.value}/recipes/${recipeUuid.value}/shopping-list-items`
+        )
+        const count = response.data.data.length
+        shoppingListMessage.value = count === 0
+            ? 'Все необходимые продукты уже есть в списке.'
+            : `Добавлено в список покупок: ${count}.`
+    } catch (requestError: unknown) {
+        pageError.value = errorMessage(requestError, 'Не удалось добавить продукты в список покупок.')
+    }
+}
 
 async function loadNotes(page = 1): Promise<void> {
     try {
@@ -379,6 +422,7 @@ function baseMeasurementUnit(type: MeasurementType): MeasurementUnit {
                     </ol>
                 </section>
 
+                <aside class="space-y-4">
                 <section class="h-fit border border-slate-200 bg-slate-50">
                     <header class="flex items-center justify-between border-b border-slate-200 bg-slate-100 px-4 py-3">
                         <h2 class="font-semibold text-slate-900">Ингредиенты</h2>
@@ -409,6 +453,59 @@ function baseMeasurementUnit(type: MeasurementType): MeasurementUnit {
                         </li>
                     </ul>
                 </section>
+
+                <section v-if="availability" class="border border-slate-200 bg-white">
+                    <header class="border-b border-slate-200 px-4 py-3">
+                        <h2 class="font-semibold text-slate-900">Продукты дома</h2>
+                        <p
+                            class="mt-1 text-sm"
+                            :class="availability.can_make ? 'text-emerald-700' : 'text-amber-700'"
+                        >
+                            {{ availability.can_make
+                                ? 'Всё необходимое есть'
+                                : `Не хватает продуктов: ${availability.missing_required_count}` }}
+                        </p>
+                    </header>
+
+                    <ul class="divide-y divide-slate-100">
+                        <li
+                            v-for="ingredient in availability.ingredients"
+                            :key="ingredient.ingredient_uuid"
+                            class="px-4 py-3 text-sm"
+                        >
+                            <div class="flex items-start justify-between gap-3">
+                                <span class="text-slate-700">
+                                    {{ ingredient.product.name }}
+                                    <span v-if="ingredient.is_optional" class="text-slate-400">(необязательно)</span>
+                                </span>
+                                <span :class="ingredient.sufficient ? 'text-emerald-700' : 'text-amber-700'">
+                                    {{ ingredient.sufficient ? 'есть' : `−${formatQuantity(
+                                        ingredient.missing_quantity,
+                                        ingredient.product.measurement_type
+                                    )}` }}
+                                </span>
+                            </div>
+                            <p class="mt-1 text-xs text-slate-400">
+                                Есть {{ formatQuantity(ingredient.available_quantity, ingredient.product.measurement_type) }}
+                                из {{ formatQuantity(ingredient.required_quantity, ingredient.product.measurement_type) }}
+                            </p>
+                        </li>
+                    </ul>
+
+                    <div v-if="!availability.can_make" class="border-t border-slate-200 p-3">
+                        <button
+                            type="button"
+                            class="w-full rounded border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
+                            @click="addMissingToShoppingList"
+                        >
+                            Добавить недостающее в покупки
+                        </button>
+                        <p v-if="shoppingListMessage" class="mt-2 text-xs text-emerald-700">
+                            {{ shoppingListMessage }}
+                        </p>
+                    </div>
+                </section>
+                </aside>
             </div>
 
             <section class="border-t border-slate-200 pt-5">

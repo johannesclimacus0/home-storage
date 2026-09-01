@@ -17,6 +17,32 @@ export interface RecipeSummary {
     steps_count: number
 }
 
+export type RecipeAvailabilityFilter = 'all' | 'available' | 'missing'
+
+export interface RecipeAvailabilitySummary {
+    can_make: boolean
+    missing_required_count: number
+}
+
+export interface HouseholdRecipeSummary extends RecipeSummary {
+    availability: RecipeAvailabilitySummary
+}
+
+export interface RecipeIngredientAvailability {
+    ingredient_uuid: string
+    product: CatalogProduct
+    required_quantity: string
+    available_quantity: string
+    missing_quantity: string
+    is_optional: boolean
+    sufficient: boolean
+}
+
+export interface RecipeAvailability extends RecipeAvailabilitySummary {
+    recipe_uuid: string
+    ingredients: RecipeIngredientAvailability[]
+}
+
 export interface RecipeIngredient {
     uuid: string
     product: CatalogProduct

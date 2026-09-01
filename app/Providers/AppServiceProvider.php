@@ -10,6 +10,7 @@ use App\Contracts\Messages\MessageRepository;
 use App\Contracts\Notes\RecipeNoteRepository;
 use App\Contracts\Notifications\NotificationRepository;
 use App\Contracts\Products\ProductRepository;
+use App\Contracts\Recipes\RecipeAvailabilityRepository;
 use App\Contracts\Recipes\RecipeRepository;
 use App\Contracts\Shopping\ShoppingListRepository;
 use App\Repositories\EloquentHouseholdMessageRepository;
@@ -19,6 +20,7 @@ use App\Repositories\EloquentInventoryRepository;
 use App\Repositories\EloquentLowStockReminderRepository;
 use App\Repositories\EloquentNotificationRepository;
 use App\Repositories\EloquentProductRepository;
+use App\Repositories\EloquentRecipeAvailabilityRepository;
 use App\Repositories\EloquentRecipeRepository;
 use App\Repositories\EloquentShoppingListRepository;
 use App\Repositories\EloquentStockMovementRepository;
@@ -40,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ShoppingListRepository::class, EloquentShoppingListRepository::class);
         $this->app->bind(MessageRepository::class, EloquentHouseholdMessageRepository::class);
         $this->app->bind(RecipeRepository::class, EloquentRecipeRepository::class);
+        $this->app->bind(RecipeAvailabilityRepository::class, EloquentRecipeAvailabilityRepository::class);
         $this->app->bind(RecipeNoteRepository::class, EloquentRecipeNoteRepository::class);
     }
 

@@ -1,16 +1,28 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import PaginationNav from '../components/ui/PaginationNav.vue'
 import SearchInput from '../components/ui/SearchInput.vue'
+import { useHouseholds } from '../composables/useHouseholds'
 import http from '../lib/http'
 import { errorMessage } from '../lib/apiError'
 import type { PaginatedResponse, PaginationMeta } from '../types/api'
-import type { RecipeSummary } from '../types/recipe'
+import type {
+    HouseholdRecipeSummary,
+    RecipeAvailabilityFilter,
+} from '../types/recipe'
 
-const recipes = ref<RecipeSummary[]>([])
+const { selectedHouseholdUuid, fetchHouseholds } = useHouseholds()
+const recipes = ref<HouseholdRecipeSummary[]>([])
 const meta = ref<PaginationMeta | null>(null)
 const pageError = ref<string | null>(null)
 const search = ref('')
+const availabilityFilter = ref<RecipeAvailabilityFilter>('all')
+const availabilityFilters: Array<{ value: RecipeAvailabilityFilter; label: string }> = [
+    { value: 'all', label: 'Все' },
+    { value: 'available', label: 'Можно приготовить' },
+    { value: 'missing', label: 'Не хватает продуктов' },
+]
+let ready = false
 
 const visibleRecipes = computed(() => {
     const query = search.value.trim().toLocaleLowerCase()
@@ -23,15 +35,36 @@ const visibleRecipes = computed(() => {
     )
 })
 
-onMounted(() => loadRecipes(1))
+onMounted(async () => {
+    await fetchHouseholds()
+    ready = true
+    await loadRecipes(1)
+})
+
+watch([selectedHouseholdUuid, availabilityFilter], () => {
+    if (ready) loadRecipes(1)
+})
 
 async function loadRecipes(page: number): Promise<void> {
     pageError.value = null
 
+    if (selectedHouseholdUuid.value === null) {
+        recipes.value = []
+        meta.value = null
+        return
+    }
+
     try {
-        const response = await http.get<PaginatedResponse<RecipeSummary>>('/api/recipes', {
-            params: { page, per_page: 12 },
-        })
+        const response = await http.get<PaginatedResponse<HouseholdRecipeSummary>>(
+            `/api/households/${selectedHouseholdUuid.value}/recipes`,
+            {
+                params: {
+                    page,
+                    per_page: 12,
+                    availability: availabilityFilter.value,
+                },
+            }
+        )
 
         recipes.value = response.data.data
         meta.value = response.data.meta
@@ -40,7 +73,7 @@ async function loadRecipes(page: number): Promise<void> {
     }
 }
 
-function totalMinutes(recipe: RecipeSummary): number {
+function totalMinutes(recipe: HouseholdRecipeSummary): number {
     return recipe.before_cooking_minutes + recipe.cooking_minutes
 }
 </script>
@@ -61,6 +94,21 @@ function totalMinutes(recipe: RecipeSummary): number {
             v-model="search"
             placeholder="Поиск по рецептам"
         />
+
+        <div class="flex flex-wrap gap-2 border-b border-slate-200 pb-4">
+            <button
+                v-for="filter in availabilityFilters"
+                :key="filter.value"
+                type="button"
+                class="rounded border px-3 py-1.5 text-sm"
+                :class="availabilityFilter === filter.value
+                    ? 'border-slate-700 bg-slate-800 text-white'
+                    : 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50'"
+                @click="availabilityFilter = filter.value"
+            >
+                {{ filter.label }}
+            </button>
+        </div>
 
         <p v-if="pageError" class="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
             {{ pageError }}
@@ -85,6 +133,11 @@ function totalMinutes(recipe: RecipeSummary): number {
                 </div>
 
                 <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 sm:justify-end">
+                    <span :class="recipe.availability.can_make ? 'text-emerald-700' : 'text-amber-700'">
+                        {{ recipe.availability.can_make
+                            ? 'Можно приготовить'
+                            : `Не хватает: ${recipe.availability.missing_required_count}` }}
+                    </span>
                     <span>{{ totalMinutes(recipe) }} мин.</span>
                     <span>{{ recipe.servings }} порц.</span>
                     <span>{{ recipe.ingredients_count }} инг.</span>

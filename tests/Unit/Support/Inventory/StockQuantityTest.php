@@ -30,6 +30,7 @@ final class StockQuantityTest extends TestCase
     {
         $this->assertSame('12.300', StockQuantity::databaseValue('0012.3'));
         $this->assertSame(12300, StockQuantity::toMinorUnits('12.3'));
+        $this->assertSame('12.300', StockQuantity::fromMinorUnits(12300));
     }
 
     public function test_count_quantity_must_be_whole(): void
