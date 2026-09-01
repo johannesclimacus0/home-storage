@@ -20,7 +20,7 @@
         "barryvdh/laravel-debugbar": "^4.4",
         "barryvdh/laravel-ide-helper": "^3.7",
         "fakerphp/faker": "^1.23",
-        "johannesclimacus/artisan-factory": "^0.1",
+        "johannesclimacus/artisan-factory": "^0.2",
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",

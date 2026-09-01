@@ -55,4 +55,9 @@ class Recipe extends Model
     {
         return $this->hasMany(RecipeStep::class)->orderBy('position');
     }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(RecipeNote::class);
+    }
 }

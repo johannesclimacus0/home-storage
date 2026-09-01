@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\RecipeController;
 use App\Http\Controllers\Api\RecipeIngredientController;
+use App\Http\Controllers\Api\RecipeNoteController;
 use App\Http\Controllers\Api\RecipeStepController;
 use App\Http\Controllers\Api\ShoppingListItemController;
 use App\Http\Controllers\Api\StockController;
@@ -63,6 +64,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         ->only(['store', 'update', 'destroy']);
     Route::apiResource('recipes.steps', RecipeStepController::class)
         ->only(['store', 'update', 'destroy']);
+    Route::apiResource('recipes.notes', RecipeNoteController::class)
+        ->parameters(['notes' => 'recipeNote']);
 
     Route::get('/notifications', [NotificationController::class, 'index']);
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);

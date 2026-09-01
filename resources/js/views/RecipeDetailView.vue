@@ -2,11 +2,12 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ModalDialog from '../components/ui/ModalDialog.vue'
+import PaginationNav from '../components/ui/PaginationNav.vue'
 import { useAuth } from '../composables/useAuth'
 import http from '../lib/http'
 import { errorMessage, validationErrors } from '../lib/apiError'
-import { formatQuantity, measurementUnitLabel } from '../lib/format'
-import type { ApiResponse, ValidationErrors } from '../types/api'
+import { formatDate, formatQuantity, measurementUnitLabel } from '../lib/format'
+import type { ApiResponse, PaginatedResponse, PaginationMeta, ValidationErrors } from '../types/api'
 import type { CatalogProduct, MeasurementType, MeasurementUnit } from '../types/inventory'
 import type {
     Recipe,
@@ -14,6 +15,7 @@ import type {
     RecipeIngredientPayload,
     RecipeStep,
 } from '../types/recipe'
+import type RecipeNote from '../types/note'
 
 const route = useRoute()
 const router = useRouter()
@@ -27,6 +29,10 @@ const ingredientModalOpen = ref(false)
 const editingIngredient = ref<RecipeIngredient | null>(null)
 const stepModalOpen = ref(false)
 const editingStep = ref<RecipeStep | null>(null)
+const notes = ref<RecipeNote[]>([])
+const notesMeta = ref<PaginationMeta | null>(null)
+const noteModalOpen = ref(false)
+const editingNote = ref<RecipeNote | null>(null)
 
 const ingredientForm = reactive({
     productUuid: '',
@@ -36,6 +42,7 @@ const ingredientForm = reactive({
     note: '',
 })
 const stepForm = reactive({ description: '' })
+const noteForm = reactive({ content: '' })
 
 const recipeUuid = computed(() => route.params.recipeUuid as string)
 const canEdit = computed(() => recipe.value?.creator?.id === user.value?.id)
@@ -58,8 +65,76 @@ const selectedProduct = computed(() =>
 const ingredientUnits = computed(() => unitsFor(selectedProduct.value?.measurement_type ?? 'count'))
 
 onMounted(async () => {
-    await Promise.all([loadRecipe(), loadProducts()])
+    await Promise.all([loadRecipe(), loadProducts(), loadNotes()])
 })
+
+async function loadNotes(page = 1): Promise<void> {
+    try {
+        const response = await http.get<PaginatedResponse<RecipeNote>>(
+            `/api/recipes/${recipeUuid.value}/notes`,
+            { params: { page, per_page: 5 } }
+        )
+        notes.value = response.data.data
+        notesMeta.value = response.data.meta
+    } catch (requestError: unknown) {
+        pageError.value = errorMessage(requestError, 'Не удалось загрузить заметки.')
+    }
+}
+
+function openNoteCreate(): void {
+    clearFormErrors()
+    editingNote.value = null
+    noteForm.content = ''
+    noteModalOpen.value = true
+}
+
+function openNoteEdit(note: RecipeNote): void {
+    clearFormErrors()
+    editingNote.value = note
+    noteForm.content = note.content
+    noteModalOpen.value = true
+}
+
+function closeNoteModal(): void {
+    noteModalOpen.value = false
+    editingNote.value = null
+}
+
+async function saveNote(): Promise<void> {
+    clearFormErrors()
+
+    try {
+        if (editingNote.value === null) {
+            await http.post(`/api/recipes/${recipeUuid.value}/notes`, {
+                content: noteForm.content,
+            })
+        } else {
+            await http.patch(`/api/recipes/${recipeUuid.value}/notes/${editingNote.value.uuid}`, {
+                content: noteForm.content,
+            })
+        }
+
+        const page = editingNote.value === null ? 1 : notesMeta.value?.current_page ?? 1
+        closeNoteModal()
+        await loadNotes(page)
+    } catch (requestError: unknown) {
+        fieldErrors.value = validationErrors(requestError)
+        formError.value = errorMessage(requestError, 'Не удалось сохранить заметку.')
+    }
+}
+
+async function deleteNote(note: RecipeNote): Promise<void> {
+    if (!window.confirm('Удалить заметку?')) return
+
+    try {
+        await http.delete(`/api/recipes/${recipeUuid.value}/notes/${note.uuid}`)
+        const currentPage = notesMeta.value?.current_page ?? 1
+        const nextPage = notes.value.length === 1 && currentPage > 1 ? currentPage - 1 : currentPage
+        await loadNotes(nextPage)
+    } catch (requestError: unknown) {
+        pageError.value = errorMessage(requestError, 'Не удалось удалить заметку.')
+    }
+}
 
 async function loadRecipe(): Promise<void> {
     pageError.value = null
@@ -336,6 +411,30 @@ function baseMeasurementUnit(type: MeasurementType): MeasurementUnit {
                 </section>
             </div>
 
+            <section class="border-t border-slate-200 pt-5">
+                <header class="mb-3 flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-slate-900">Мои заметки</h2>
+                    <button type="button" class="text-sm text-slate-600 hover:text-slate-900" @click="openNoteCreate">
+                        Добавить
+                    </button>
+                </header>
+
+                <p v-if="notes.length === 0" class="py-3 text-sm text-slate-500">Заметок пока нет.</p>
+                <ul v-else class="divide-y divide-slate-200 border-y border-slate-200">
+                    <li v-for="note in notes" :key="note.uuid" class="py-4">
+                        <p class="whitespace-pre-wrap break-words text-sm leading-6 text-slate-700">{{ note.content }}</p>
+                        <div class="mt-2 flex items-center justify-between gap-3 text-xs">
+                            <span class="text-slate-400">{{ formatDate(note.updated_at) }}</span>
+                            <div class="flex">
+                                <button class="px-2 py-1 text-slate-600 hover:text-slate-900" @click="openNoteEdit(note)">Изменить</button>
+                                <button class="px-2 py-1 text-red-600 hover:text-red-800" @click="deleteNote(note)">Удалить</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <PaginationNav class="mt-3" :meta="notesMeta" @change="loadNotes" />
+            </section>
+
         </template>
 
         <ModalDialog
@@ -406,6 +505,25 @@ function baseMeasurementUnit(type: MeasurementType): MeasurementUnit {
                 </label>
                 <div class="flex justify-end gap-2">
                     <button type="button" class="rounded-md px-3 py-2 text-slate-600 hover:bg-slate-100" @click="closeStepModal">Отмена</button>
+                    <button class="rounded-md bg-slate-900 px-3 py-2 text-white">Сохранить</button>
+                </div>
+            </form>
+        </ModalDialog>
+
+        <ModalDialog
+            :open="noteModalOpen"
+            :title="editingNote ? 'Изменить заметку' : 'Новая заметка'"
+            @close="closeNoteModal"
+        >
+            <form class="space-y-4" @submit.prevent="saveNote">
+                <p v-if="formError" class="text-sm text-red-600">{{ formError }}</p>
+                <label class="block text-sm">
+                    <span class="mb-1 block text-slate-600">Текст</span>
+                    <textarea v-model="noteForm.content" rows="7" maxlength="10000" class="w-full resize-y rounded-md border border-slate-300 px-3 py-2"></textarea>
+                    <span v-if="fieldErrors.content" class="mt-1 block text-xs text-red-600">{{ fieldErrors.content[0] }}</span>
+                </label>
+                <div class="flex justify-end gap-2">
+                    <button type="button" class="rounded-md px-3 py-2 text-slate-600 hover:bg-slate-100" @click="closeNoteModal">Отмена</button>
                     <button class="rounded-md bg-slate-900 px-3 py-2 text-white">Сохранить</button>
                 </div>
             </form>

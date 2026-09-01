@@ -75,4 +75,5 @@ class Household extends Model
     {
         return $this->hasMany(HouseholdMessage::class);
     }
+
 }
