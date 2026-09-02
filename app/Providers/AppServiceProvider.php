@@ -33,6 +33,9 @@ use App\Repositories\EloquentStockMovementRepository;
 use App\Support\Cache\CatalogCache;
 use App\Support\Cache\HouseholdCache;
 use App\Support\Cache\RecipeCache;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -68,5 +71,23 @@ class AppServiceProvider extends ServiceProvider
         Recipe::observe(RecipeCacheObserver::class);
         RecipeIngredient::observe(RecipeCacheObserver::class);
         RecipeStep::observe(RecipeCacheObserver::class);
+
+        RateLimiter::for('authenticated-api', function (Request $request) {
+            return Limit::perMinute(300)
+                ->by('user:' . $request->user()->getAuthIdentifier());
+        });
+
+        RateLimiter::for('write-operations', function (Request $request) {
+            return Limit::perMinute(60)
+                ->by('user:' . $request->user()->getAuthIdentifier());
+        });
+
+        RateLimiter::for('chat-messages', function (Request $request) {
+            $userId = $request->user()->getAuthIdentifier();
+            $householdUuid = $request->route()->originalParameter('household');
+
+            return Limit::perMinute(30)
+                ->by("user:{$userId}:household:{$householdUuid}");
+        });
     }
 }

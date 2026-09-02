@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import axios from 'axios'
 import { nextTick, ref, watch } from 'vue'
 import { useHouseholds } from '../composables/useHouseholds'
 import { useAuth } from '../composables/useAuth'
@@ -16,6 +17,7 @@ const messages = ref<HouseholdMessage[]>([])
 const content = ref('')
 const nextPageUrl = ref<string | null>(null)
 const pageError = ref<string | null>(null)
+const sendError = ref<string | null>(null)
 const editingUuid = ref<string | null>(null)
 const editingContent = ref('')
 const messageList = ref<HTMLElement | null>(null)
@@ -26,6 +28,7 @@ async function loadMessages(): Promise<void> {
     messages.value = []
     nextPageUrl.value = null
     pageError.value = null
+    sendError.value = null
 
     if (selectedHouseholdUuid.value === null) return
 
@@ -82,10 +85,13 @@ async function sendMessage(): Promise<void> {
         )
         mergeMessage(response.data.data)
         content.value = ''
+        sendError.value = null
         await nextTick()
         scrollToBottom()
     } catch (requestError: unknown) {
-        pageError.value = errorMessage(requestError, 'Не удалось отправить сообщение.')
+        sendError.value = axios.isAxiosError(requestError) && requestError.response?.status === 429
+            ? 'Слишком много сообщений. Попробуйте через минуту.'
+            : errorMessage(requestError, 'Не удалось отправить сообщение.')
     }
 }
 
@@ -305,21 +311,27 @@ function scrollToBottom(): void {
                 </div>
             </div>
 
-            <form class="flex shrink-0 items-end gap-2 border-t border-slate-200 bg-white p-3" @submit.prevent="sendMessage">
-                <label class="sr-only" for="message-content">Сообщение</label>
-                <textarea
-                    id="message-content"
-                    v-model="content"
-                    maxlength="2000"
-                    rows="1"
-                    placeholder="Сообщение"
-                    class="max-h-32 min-h-10 flex-1 resize-none rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm leading-5 outline-none focus:border-slate-500"
-                    @keydown.enter.exact.prevent="sendMessage"
-                ></textarea>
-                <button type="submit" :disabled="content.trim() === ''" class="h-10 rounded-md bg-slate-900 px-4 text-sm text-white hover:bg-slate-800 disabled:opacity-40">
-                    Отправить
-                </button>
-            </form>
+            <div class="shrink-0 border-t border-slate-200 bg-white p-3">
+                <form class="flex items-end gap-2" @submit.prevent="sendMessage">
+                    <label class="sr-only" for="message-content">Сообщение</label>
+                    <textarea
+                        id="message-content"
+                        v-model="content"
+                        maxlength="2000"
+                        rows="1"
+                        placeholder="Сообщение"
+                        class="max-h-32 min-h-10 flex-1 resize-none rounded-md border border-slate-300 bg-white px-3 py-2.5 text-sm leading-5 outline-none focus:border-slate-500"
+                        @keydown.enter.exact.prevent="sendMessage"
+                    ></textarea>
+                    <button type="submit" :disabled="content.trim() === ''" class="h-10 rounded-md bg-slate-900 px-4 text-sm text-white hover:bg-slate-800 disabled:opacity-40">
+                        Отправить
+                    </button>
+                </form>
+
+                <p v-if="sendError" class="mt-2 text-sm text-red-600">
+                    {{ sendError }}
+                </p>
+            </div>
         </section>
     </div>
 </template>

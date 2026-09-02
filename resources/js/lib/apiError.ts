@@ -14,5 +14,9 @@ export function errorMessage(error: unknown, fallback = 'Что-то пошло 
         return fallback
     }
 
+    if (error.response?.status === 429) {
+        return 'Слишком много запросов. Попробуйте немного позже.'
+    }
+
     return error.response?.data?.message ?? fallback
 }

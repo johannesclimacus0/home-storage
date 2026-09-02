@@ -21,59 +21,85 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware(['auth:sanctum', 'throttle:authenticated-api']);
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::apiResource('households', HouseholdController::class);
+Route::middleware(['auth:sanctum', 'verified', 'throttle:authenticated-api'])->group(function () {
+    Route::apiResource('households', HouseholdController::class)
+        ->middlewareFor(['store', 'update', 'destroy'], 'throttle:write-operations');
 
     Route::get('/households/{household}/members', [HouseholdController::class, 'members']);
-    Route::post('/households/{household}/members', [HouseholdController::class, 'storeMember']);
-    Route::delete('/households/{household}/members/{member}', [HouseholdController::class, 'removeMember']);
-    Route::delete('/households/{household}/membership', [HouseholdController::class, 'leave']);
-    Route::patch('/households/{household}/owner', [HouseholdController::class, 'transferOwnership']);
+    Route::post('/households/{household}/members', [HouseholdController::class, 'storeMember'])
+        ->middleware('throttle:write-operations');
+    Route::delete('/households/{household}/members/{member}', [HouseholdController::class, 'removeMember'])
+        ->middleware('throttle:write-operations');
+    Route::delete('/households/{household}/membership', [HouseholdController::class, 'leave'])
+        ->middleware('throttle:write-operations');
+    Route::patch('/households/{household}/owner', [HouseholdController::class, 'transferOwnership'])
+        ->middleware('throttle:write-operations');
 
     Route::apiResource('households.storage-locations', StorageLocationController::class)
-        ->parameters(['storage-locations' => 'storageLocation']);
+        ->parameters(['storage-locations' => 'storageLocation'])
+        ->middlewareFor(['store', 'update', 'destroy'], 'throttle:write-operations');
 
-    Route::apiResource('households.products', HouseholdProductController::class);
+    Route::apiResource('households.products', HouseholdProductController::class)
+        ->middlewareFor(['store', 'update', 'destroy'], 'throttle:write-operations');
     Route::get('/households/{household}/low-stock-products', [LowStockProductController::class, 'index']);
-    Route::patch('/households/{household}/low-stock-reminder-settings', [LowStockReminderSettingController::class, 'update']);
+    Route::patch('/households/{household}/low-stock-reminder-settings', [LowStockReminderSettingController::class, 'update'])
+        ->middleware('throttle:write-operations');
 
-    Route::post('/households/{household}/products/{product}/stocks', [StockController::class, 'store']);
-    Route::post('/households/{household}/products/{product}/consume', [StockController::class, 'consume']);
+    Route::post('/households/{household}/products/{product}/stocks', [StockController::class, 'store'])
+        ->middleware('throttle:write-operations');
+    Route::post('/households/{household}/products/{product}/consume', [StockController::class, 'consume'])
+        ->middleware('throttle:write-operations');
     Route::get('/households/{household}/stock-movements', [StockMovementController::class, 'index']);
 
     Route::get('/households/{household}/shopping-list-items', [ShoppingListItemController::class, 'index']);
-    Route::post('/households/{household}/shopping-list-items', [ShoppingListItemController::class, 'store']);
-    Route::patch('/households/{household}/shopping-list-items/{shoppingListItem}', [ShoppingListItemController::class, 'update']);
-    Route::patch('/households/{household}/shopping-list-items/{shoppingListItem}/complete', [ShoppingListItemController::class, 'complete']);
-    Route::patch('/households/{household}/shopping-list-items/{shoppingListItem}/reopen', [ShoppingListItemController::class, 'reopen']);
-    Route::post('/households/{household}/shopping-list-items/{shoppingListItem}/purchase', [ShoppingListItemController::class, 'purchase']);
-    Route::delete('/households/{household}/shopping-list-items/{shoppingListItem}', [ShoppingListItemController::class, 'destroy']);
+    Route::post('/households/{household}/shopping-list-items', [ShoppingListItemController::class, 'store'])
+        ->middleware('throttle:write-operations');
+    Route::patch('/households/{household}/shopping-list-items/{shoppingListItem}', [ShoppingListItemController::class, 'update'])
+        ->middleware('throttle:write-operations');
+    Route::patch('/households/{household}/shopping-list-items/{shoppingListItem}/complete', [ShoppingListItemController::class, 'complete'])
+        ->middleware('throttle:write-operations');
+    Route::patch('/households/{household}/shopping-list-items/{shoppingListItem}/reopen', [ShoppingListItemController::class, 'reopen'])
+        ->middleware('throttle:write-operations');
+    Route::post('/households/{household}/shopping-list-items/{shoppingListItem}/purchase', [ShoppingListItemController::class, 'purchase'])
+        ->middleware('throttle:write-operations');
+    Route::delete('/households/{household}/shopping-list-items/{shoppingListItem}', [ShoppingListItemController::class, 'destroy'])
+        ->middleware('throttle:write-operations');
 
     Route::get('/households/{household}/messages', [HouseholdMessageController::class, 'index']);
-    Route::post('/households/{household}/messages', [HouseholdMessageController::class, 'store']);
-    Route::patch('/households/{household}/messages/{message}', [HouseholdMessageController::class, 'update']);
-    Route::delete('/households/{household}/messages/{message}', [HouseholdMessageController::class, 'destroy']);
+    Route::post('/households/{household}/messages', [HouseholdMessageController::class, 'store'])
+        ->middleware('throttle:chat-messages');
+    Route::patch('/households/{household}/messages/{message}', [HouseholdMessageController::class, 'update'])
+        ->middleware('throttle:write-operations');
+    Route::delete('/households/{household}/messages/{message}', [HouseholdMessageController::class, 'destroy'])
+        ->middleware('throttle:write-operations');
 
     Route::get('/households/{household}/recipes', [HouseholdRecipeController::class, 'index']);
     Route::get('/households/{household}/recipes/{recipe}/availability', [HouseholdRecipeController::class, 'show']);
-    Route::post('/households/{household}/recipes/{recipe}/shopping-list-items', [HouseholdRecipeController::class, 'addMissingToShoppingList']);
+    Route::post('/households/{household}/recipes/{recipe}/shopping-list-items', [HouseholdRecipeController::class, 'addMissingToShoppingList'])
+        ->middleware('throttle:write-operations');
 
     Route::apiResource('products', ProductController::class)
         ->only(['index', 'store', 'show'])
-        ->parameters(['products' => 'product']);
+        ->parameters(['products' => 'product'])
+        ->middlewareFor('store', 'throttle:write-operations');
 
-    Route::apiResource('recipes', RecipeController::class);
+    Route::apiResource('recipes', RecipeController::class)
+        ->middlewareFor(['store', 'update', 'destroy'], 'throttle:write-operations');
     Route::apiResource('recipes.ingredients', RecipeIngredientController::class)
-        ->only(['store', 'update', 'destroy']);
+        ->only(['store', 'update', 'destroy'])
+        ->middleware('throttle:write-operations');
     Route::apiResource('recipes.steps', RecipeStepController::class)
-        ->only(['store', 'update', 'destroy']);
+        ->only(['store', 'update', 'destroy'])
+        ->middleware('throttle:write-operations');
     Route::apiResource('recipes.notes', RecipeNoteController::class)
-        ->parameters(['notes' => 'recipeNote']);
+        ->parameters(['notes' => 'recipeNote'])
+        ->middlewareFor(['store', 'update', 'destroy'], 'throttle:write-operations');
 
     Route::get('/notifications', [NotificationController::class, 'index']);
-    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
-    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
-
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
+        ->middleware('throttle:write-operations');
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
+        ->middleware('throttle:write-operations');
 });

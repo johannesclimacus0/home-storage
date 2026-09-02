@@ -2,6 +2,7 @@
 import { reactive, ref } from 'vue';
 import { useAuth } from '../../composables/useAuth'
 import { useRouter } from 'vue-router';
+import { errorMessage, validationErrors } from '../../lib/apiError'
 
 const router = useRouter();
 const { login } = useAuth();
@@ -23,12 +24,10 @@ async function submit() {
         form.password = '';
         await router.push({ name: 'products' });
     } catch(requestError) {
-        if(requestError.response?.status === 422){
-            fieldErrors.value = requestError.response.data.errors ?? {};
-        }
-        else{
-            generalError.value = 'Не удалось войти';
-        }
+        fieldErrors.value = validationErrors(requestError)
+        generalError.value = Object.keys(fieldErrors.value).length === 0
+            ? errorMessage(requestError, 'Не удалось войти')
+            : null
     }
 }
 </script>

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import http from '../lib/http'
 import { useAuth } from '../composables/useAuth'
+import { errorMessage } from '../lib/apiError'
 
 const router = useRouter()
 const { logout } = useAuth()
@@ -17,7 +18,7 @@ async function resend() {
         await http.post('/email/verification-notification')
         sent.value = true
     } catch (requestError) {
-        error.value = requestError.response?.data?.message ?? 'Не удалось отправить письмо для подтверждения.'
+        error.value = errorMessage(requestError, 'Не удалось отправить письмо для подтверждения.')
     }
 }
 
