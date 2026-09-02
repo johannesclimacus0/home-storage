@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Inventory\ManageHouseholdInventoryRequest;
 use App\Http\Requests\Inventory\StoreHouseholdProductRequest;
 use App\Http\Requests\Inventory\UpdateHouseholdProductRequest;
+use App\Http\Resources\HouseholdProductListResource;
 use App\Http\Resources\HouseholdProductResource;
 use App\Models\Household;
 use Illuminate\Http\JsonResponse;
@@ -26,7 +27,7 @@ final class HouseholdProductController extends Controller
         Household $household,
         ListHouseholdProductsAction $action,
     ): AnonymousResourceCollection {
-        return HouseholdProductResource::collection(
+        return HouseholdProductListResource::collection(
             $action->handle($household->uuid, $request->user()->getKey()),
         );
     }

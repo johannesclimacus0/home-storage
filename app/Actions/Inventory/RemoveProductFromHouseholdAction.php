@@ -24,6 +24,7 @@ final readonly class RemoveProductFromHouseholdAction
             );
 
             $this->inventory->deleteHouseholdProduct($householdProduct);
+
         });
     }
 }

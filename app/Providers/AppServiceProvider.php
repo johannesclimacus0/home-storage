@@ -13,17 +13,26 @@ use App\Contracts\Products\ProductRepository;
 use App\Contracts\Recipes\RecipeAvailabilityRepository;
 use App\Contracts\Recipes\RecipeRepository;
 use App\Contracts\Shopping\ShoppingListRepository;
+use App\Models\Product;
+use App\Models\Recipe;
+use App\Models\RecipeIngredient;
+use App\Models\RecipeStep;
+use App\Observers\ProductCacheObserver;
+use App\Observers\RecipeCacheObserver;
 use App\Repositories\EloquentHouseholdMessageRepository;
-use App\Repositories\EloquentRecipeNoteRepository;
 use App\Repositories\EloquentHouseholdRepository;
 use App\Repositories\EloquentInventoryRepository;
 use App\Repositories\EloquentLowStockReminderRepository;
 use App\Repositories\EloquentNotificationRepository;
 use App\Repositories\EloquentProductRepository;
 use App\Repositories\EloquentRecipeAvailabilityRepository;
+use App\Repositories\EloquentRecipeNoteRepository;
 use App\Repositories\EloquentRecipeRepository;
 use App\Repositories\EloquentShoppingListRepository;
 use App\Repositories\EloquentStockMovementRepository;
+use App\Support\Cache\CatalogCache;
+use App\Support\Cache\HouseholdCache;
+use App\Support\Cache\RecipeCache;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -44,6 +53,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(RecipeRepository::class, EloquentRecipeRepository::class);
         $this->app->bind(RecipeAvailabilityRepository::class, EloquentRecipeAvailabilityRepository::class);
         $this->app->bind(RecipeNoteRepository::class, EloquentRecipeNoteRepository::class);
+
+        $this->app->when([HouseholdCache::class, CatalogCache::class, RecipeCache::class])
+            ->needs('$ttl')
+            ->giveConfig('cache.domain_ttl', 300);
     }
 
     /**
@@ -51,6 +64,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Product::observe(ProductCacheObserver::class);
+        Recipe::observe(RecipeCacheObserver::class);
+        RecipeIngredient::observe(RecipeCacheObserver::class);
+        RecipeStep::observe(RecipeCacheObserver::class);
     }
 }

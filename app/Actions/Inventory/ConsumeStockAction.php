@@ -11,6 +11,7 @@ use App\DTO\Inventory\CreateStockMovementData;
 use App\Enums\StockMovementType;
 use App\Exceptions\Inventory\InsufficientStock;
 use App\Services\Inventory\LowStockTracker;
+use App\Support\Cache\HouseholdCache;
 use App\Support\Inventory\StockQuantity;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,7 @@ final readonly class ConsumeStockAction
         private HouseholdRepository $households,
         private StockMovementRepository $movements,
         private LowStockTracker $lowStockTracker,
+        private HouseholdCache $cache,
     ) {}
 
     public function handle(ConsumeStockData $data): ConsumeStockResult
@@ -69,6 +71,8 @@ final readonly class ConsumeStockAction
                 $householdProduct,
                 CarbonImmutable::now(),
             );
+
+            DB::afterCommit(fn () => $this->cache->forgetInventory($data->householdUuid));
 
             return new ConsumeStockResult(
                 householdUuid: $household->uuid,

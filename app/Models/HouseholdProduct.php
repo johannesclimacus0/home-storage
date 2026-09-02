@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Observers\HouseholdProductObserver;
 use Carbon\CarbonImmutable;
 use Database\Factories\HouseholdProductFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -47,6 +49,7 @@ use Illuminate\Support\Carbon;
     'low_stock_threshold',
     'low_stock_since',
 ])]
+#[ObservedBy(HouseholdProductObserver::class)]
 class HouseholdProduct extends Model
 {
     /** @use HasFactory<HouseholdProductFactory> */
