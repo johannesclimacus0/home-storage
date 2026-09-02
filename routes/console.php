@@ -11,3 +11,6 @@ Artisan::command('inspire', function () {
 Schedule::command('inventory:send-low-stock-reminders')
     ->everyMinute()
     ->withoutOverlapping();
+
+Schedule::command('horizon:snapshot')
+    ->everyFiveMinutes();
