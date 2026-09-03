@@ -104,6 +104,14 @@ async function handleLogout() {
                         role="menu"
                     >
                         <RouterLink
+                            :to="{ name: 'profile' }"
+                            role="menuitem"
+                            class="block rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+                            @click="userMenuOpen = false"
+                        >
+                            Профиль
+                        </RouterLink>
+                        <RouterLink
                             :to="{ name: 'household-settings' }"
                             role="menuitem"
                             class="block rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-950"

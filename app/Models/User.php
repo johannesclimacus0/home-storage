@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\DatabaseNotificationCollection;
@@ -106,5 +107,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function recipeNotes(): HasMany
     {
         return $this->hasMany(RecipeNote::class, 'author_id');
+    }
+
+    public function telegramConnection(): HasOne
+    {
+        return $this->hasOne(TelegramConnection::class);
     }
 }

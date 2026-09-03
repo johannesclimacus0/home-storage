@@ -16,6 +16,8 @@ use App\Http\Controllers\Api\ShoppingListItemController;
 use App\Http\Controllers\Api\StockController;
 use App\Http\Controllers\Api\StockMovementController;
 use App\Http\Controllers\Api\StorageLocationController;
+use App\Http\Controllers\Api\TelegramConnectionController;
+use App\Http\Controllers\Api\TelegramLinkController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -101,5 +103,9 @@ Route::middleware(['auth:sanctum', 'verified', 'throttle:authenticated-api'])->g
     Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])
         ->middleware('throttle:write-operations');
     Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])
+        ->middleware('throttle:write-operations');
+
+    Route::get('/telegram/connection', [TelegramConnectionController::class, 'show']);
+    Route::post('/telegram/link', [TelegramLinkController::class, 'store'])
         ->middleware('throttle:write-operations');
 });

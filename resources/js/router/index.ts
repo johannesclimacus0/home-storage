@@ -17,6 +17,7 @@ import HouseholdChatView from '../views/HouseholdChatView.vue'
 import RecipeListView from '../views/RecipeListView.vue'
 import RecipeDetailView from '../views/RecipeDetailView.vue'
 import RecipeFormView from '../views/RecipeFormView.vue'
+import ProfileView from '../views/ProfileView.vue'
 
 declare module 'vue-router' {
     interface RouteMeta {
@@ -72,6 +73,7 @@ const router = createRouter({
                 { path: 'catalog', name: 'catalog', component: CatalogView },
                 { path: 'households', name: 'household-settings', component: HouseholdSettingsView },
                 { path: 'notifications', name: 'notifications', component: NotificationsView },
+                { path: 'profile', name: 'profile', component: ProfileView },
                 { path: 'chat', name: 'household-chat', component: HouseholdChatView },
                 { path: 'recipes', name: 'recipes', component: RecipeListView },
                 { path: 'recipes/new', name: 'recipe-create', component: RecipeFormView },
