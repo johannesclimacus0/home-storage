@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'servings',
     'before_cooking_minutes',
     'cooking_minutes',
+    'image_path',
 ])]
 class Recipe extends Model
 {

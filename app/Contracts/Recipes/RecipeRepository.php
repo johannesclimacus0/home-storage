@@ -26,7 +26,8 @@ interface RecipeRepository
         ?string $description,
         int $servings,
         int $beforeCookingMinutes,
-        int $cookingMinutes
+        int $cookingMinutes,
+        ?string $imagePath = null
     ): Recipe;
 
     public function update(
@@ -35,7 +36,8 @@ interface RecipeRepository
         ?string $description,
         int $servings,
         int $beforeCookingMinutes,
-        int $cookingMinutes
+        int $cookingMinutes,
+        ?string $imagePath = null
     ): void;
 
     public function delete(Recipe $recipe): void;

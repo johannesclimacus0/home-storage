@@ -33,6 +33,8 @@ final class UpdateRecipeRequest extends FormRequest
             'servings' => 'required|integer|min:1|max:32767',
             'before_cooking_minutes' => 'required|integer|min:0|max:32767',
             'cooking_minutes' => 'required|integer|min:0|max:32767',
+            'image' => 'nullable|prohibited_if:remove_image,true|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'remove_image' => 'sometimes|boolean',
         ];
     }
 }

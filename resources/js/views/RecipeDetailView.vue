@@ -361,6 +361,13 @@ function baseMeasurementUnit(type: MeasurementType): MeasurementUnit {
         </p>
 
         <template v-if="recipe">
+            <img
+                v-if="recipe.image_url"
+                :src="recipe.image_url"
+                :alt="recipe.title"
+                class="max-h-[28rem] w-full rounded object-cover"
+            >
+
             <header class="border-b border-slate-200 pb-5">
                 <RouterLink :to="{ name: 'recipes' }" class="mb-3 inline-block text-sm text-slate-600 hover:text-slate-900">
                     ← Все рецепты

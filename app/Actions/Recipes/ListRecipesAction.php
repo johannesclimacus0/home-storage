@@ -6,6 +6,7 @@ use App\Contracts\Recipes\RecipeRepository;
 use App\Models\Recipe;
 use App\Support\Cache\RecipeCache;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 
 final readonly class ListRecipesAction
 {
@@ -28,6 +29,9 @@ final readonly class ListRecipesAction
                     'uuid' => $recipe->uuid,
                     'title' => $recipe->title,
                     'description' => $recipe->description,
+                    'image_url' => $recipe->image_path === null
+                        ? null
+                        : Storage::disk('public')->url($recipe->image_path),
                     'servings' => $recipe->servings,
                     'before_cooking_minutes' => $recipe->before_cooking_minutes,
                     'cooking_minutes' => $recipe->cooking_minutes,

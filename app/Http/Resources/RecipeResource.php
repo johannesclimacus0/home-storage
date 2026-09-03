@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 final class RecipeResource extends JsonResource
 {
@@ -18,6 +19,9 @@ final class RecipeResource extends JsonResource
             'uuid' => $this->uuid,
             'title' => $this->title,
             'description' => $this->description,
+            'image_url' => $this->image_path === null
+                ? null
+                : Storage::disk('public')->url($this->image_path),
             'servings' => $this->servings,
             'before_cooking_minutes' => $this->before_cooking_minutes,
             'cooking_minutes' => $this->cooking_minutes,

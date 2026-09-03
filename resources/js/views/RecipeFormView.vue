@@ -5,7 +5,7 @@ import { useAuth } from '../composables/useAuth'
 import http from '../lib/http'
 import { errorMessage, validationErrors } from '../lib/apiError'
 import type { ApiResponse, ValidationErrors } from '../types/api'
-import type { Recipe, RecipePayload } from '../types/recipe'
+import type { Recipe } from '../types/recipe'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,6 +13,8 @@ const { user } = useAuth()
 const recipe = ref<Recipe | null>(null)
 const pageError = ref<string | null>(null)
 const fieldErrors = ref<ValidationErrors>({})
+const image = ref<File | null>(null)
+const removeImage = ref(false)
 const recipeUuid = computed(() => route.params.recipeUuid as string | undefined)
 const editing = computed(() => recipeUuid.value !== undefined)
 const canEdit = computed(() => !editing.value || recipe.value?.creator?.id === user.value?.id)
@@ -37,6 +39,8 @@ async function loadRecipe(): Promise<void> {
         form.servings = recipe.value.servings
         form.beforeCookingMinutes = recipe.value.before_cooking_minutes
         form.cookingMinutes = recipe.value.cooking_minutes
+        image.value = null
+        removeImage.value = false
     } catch (requestError: unknown) {
         pageError.value = errorMessage(requestError, 'Не удалось загрузить рецепт.')
     }
@@ -46,18 +50,30 @@ async function submit(): Promise<void> {
     pageError.value = null
     fieldErrors.value = {}
 
-    const payload: RecipePayload = {
-        title: form.title,
-        description: form.description.trim() || null,
-        servings: form.servings,
-        before_cooking_minutes: form.beforeCookingMinutes,
-        cooking_minutes: form.cookingMinutes,
+    const payload = new FormData()
+    payload.append('title', form.title)
+    payload.append('description', form.description.trim())
+    payload.append('servings', String(form.servings))
+    payload.append('before_cooking_minutes', String(form.beforeCookingMinutes))
+    payload.append('cooking_minutes', String(form.cookingMinutes))
+
+    if (image.value !== null) {
+        payload.append('image', image.value)
     }
 
     try {
-        const response = editing.value && recipeUuid.value !== undefined
-            ? await http.put<ApiResponse<Recipe>>(`/api/recipes/${recipeUuid.value}`, payload)
-            : await http.post<ApiResponse<Recipe>>('/api/recipes', payload)
+        let response
+
+        if (editing.value && recipeUuid.value !== undefined) {
+            payload.append('_method', 'PUT')
+            payload.append('remove_image', removeImage.value ? '1' : '0')
+            response = await http.post<ApiResponse<Recipe>>(
+                `/api/recipes/${recipeUuid.value}`,
+                payload
+            )
+        } else {
+            response = await http.post<ApiResponse<Recipe>>('/api/recipes', payload)
+        }
 
         await router.push({
             name: 'recipe-show',
@@ -66,6 +82,15 @@ async function submit(): Promise<void> {
     } catch (requestError: unknown) {
         fieldErrors.value = validationErrors(requestError)
         pageError.value = errorMessage(requestError, 'Не удалось сохранить рецепт.')
+    }
+}
+
+function selectImage(event: Event): void {
+    const input = event.target as HTMLInputElement
+    image.value = input.files?.[0] ?? null
+
+    if (image.value !== null) {
+        removeImage.value = false
     }
 }
 </script>
@@ -104,6 +129,34 @@ async function submit(): Promise<void> {
                 <textarea v-model="form.description" rows="5" class="w-full resize-y rounded border border-slate-300 px-3 py-2 outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500"></textarea>
                 <span v-if="fieldErrors.description" class="mt-1 block text-xs text-red-600">{{ fieldErrors.description[0] }}</span>
             </label>
+
+            <div class="space-y-3 text-sm">
+                <span class="block text-slate-600">Изображение</span>
+
+                <img
+                    v-if="editing && recipe?.image_url && image === null && !removeImage"
+                    :src="recipe.image_url"
+                    :alt="recipe.title"
+                    class="max-h-64 max-w-full rounded border border-slate-200 object-cover"
+                >
+
+                <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    class="block w-full rounded border border-slate-300 bg-white px-3 py-2 text-sm file:mr-3 file:border-0 file:bg-slate-100 file:px-3 file:py-1.5 file:text-sm file:text-slate-700"
+                    @change="selectImage"
+                >
+
+                <p v-if="image" class="text-xs text-slate-500">Выбран файл: {{ image.name }}</p>
+                <span v-if="fieldErrors.image" class="block text-xs text-red-600">{{ fieldErrors.image[0] }}</span>
+
+                <label v-if="editing && recipe?.image_url && image === null" class="flex items-center gap-2 text-slate-600">
+                    <input v-model="removeImage" type="checkbox" class="rounded border-slate-300">
+                    Удалить текущее изображение
+                </label>
+
+                <p class="text-xs text-slate-400">JPG, PNG или WebP, не более 5 МБ.</p>
+            </div>
 
             <div class="grid gap-4 sm:grid-cols-3">
                 <label class="block text-sm">

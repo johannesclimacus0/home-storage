@@ -9,6 +9,7 @@ export interface RecipeSummary {
     uuid: string
     title: string
     description: string | null
+    image_url: string | null
     servings: number
     before_cooking_minutes: number
     cooking_minutes: number
@@ -63,14 +64,6 @@ export interface Recipe extends Omit<RecipeSummary, 'ingredients_count' | 'steps
     steps: RecipeStep[]
     created_at: string
     updated_at: string
-}
-
-export interface RecipePayload {
-    title: string
-    description: string | null
-    servings: number
-    before_cooking_minutes: number
-    cooking_minutes: number
 }
 
 export interface RecipeIngredientPayload {

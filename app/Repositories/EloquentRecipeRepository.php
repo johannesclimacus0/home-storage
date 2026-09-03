@@ -48,7 +48,8 @@ final class EloquentRecipeRepository implements RecipeRepository
         ?string $description,
         int $servings,
         int $beforeCookingMinutes,
-        int $cookingMinutes
+        int $cookingMinutes,
+        ?string $imagePath = null
     ): Recipe {
         return Recipe::query()->create([
             'created_by_user_id' => $creator?->getKey(),
@@ -57,6 +58,7 @@ final class EloquentRecipeRepository implements RecipeRepository
             'servings' => $servings,
             'before_cooking_minutes' => $beforeCookingMinutes,
             'cooking_minutes' => $cookingMinutes,
+            'image_path' => $imagePath,
         ]);
     }
 
@@ -66,7 +68,8 @@ final class EloquentRecipeRepository implements RecipeRepository
         ?string $description,
         int $servings,
         int $beforeCookingMinutes,
-        int $cookingMinutes
+        int $cookingMinutes,
+        ?string $imagePath = null
     ): void {
         $recipe->updateOrFail([
             'title' => $title,
@@ -74,6 +77,7 @@ final class EloquentRecipeRepository implements RecipeRepository
             'servings' => $servings,
             'before_cooking_minutes' => $beforeCookingMinutes,
             'cooking_minutes' => $cookingMinutes,
+            'image_path' => $imagePath,
         ]);
     }
 

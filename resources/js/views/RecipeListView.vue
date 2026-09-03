@@ -123,8 +123,17 @@ function totalMinutes(recipe: HouseholdRecipeSummary): number {
                 v-for="recipe in visibleRecipes"
                 :key="recipe.uuid"
                 :to="{ name: 'recipe-show', params: { recipeUuid: recipe.uuid } }"
-                class="group grid gap-3 bg-white px-4 py-5 hover:bg-slate-50 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center"
+                class="group grid gap-4 bg-white px-4 py-5 hover:bg-slate-50 sm:grid-cols-[96px_minmax(0,1fr)_auto] sm:items-center"
             >
+                <div class="h-16 w-24 overflow-hidden rounded bg-slate-100">
+                    <img
+                        v-if="recipe.image_url"
+                        :src="recipe.image_url"
+                        :alt="recipe.title"
+                        class="h-full w-full object-cover"
+                    >
+                </div>
+
                 <div class="min-w-0">
                     <h2 class="font-semibold text-slate-900 group-hover:text-slate-600">{{ recipe.title }}</h2>
                     <p class="mt-1 line-clamp-2 max-w-3xl text-sm leading-5 text-slate-600">

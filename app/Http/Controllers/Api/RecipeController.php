@@ -28,8 +28,7 @@ class RecipeController extends Controller
     public function index(
         ListRecipesRequest $request,
         ListRecipesAction $action
-    ): AnonymousResourceCollection
-    {
+    ): AnonymousResourceCollection {
         return RecipeListResource::collection(
             $action->handle((int) $request->validated('per_page', 8))
         );
@@ -38,15 +37,15 @@ class RecipeController extends Controller
     public function store(
         StoreRecipeRequest $request,
         CreateRecipeAction $action
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $recipe = $action->handle(new CreateRecipeData(
             actorUserId: $request->user()->getKey(),
             title: $request->validated('title'),
             description: $request->validated('description'),
             servings: $request->integer('servings'),
             beforeCookingMinutes: $request->integer('before_cooking_minutes'),
-            cookingMinutes: $request->integer('cooking_minutes')
+            cookingMinutes: $request->integer('cooking_minutes'),
+            image: $request->file('image')
         ));
 
         return new RecipeResource($recipe)
@@ -75,7 +74,9 @@ class RecipeController extends Controller
             description: $request->validated('description'),
             servings: $request->integer('servings'),
             beforeCookingMinutes: $request->integer('before_cooking_minutes'),
-            cookingMinutes: $request->integer('cooking_minutes')
+            cookingMinutes: $request->integer('cooking_minutes'),
+            image: $request->file('image'),
+            removeImage: $request->boolean('remove_image')
         ));
 
         return new RecipeResource(

@@ -22,6 +22,7 @@ class RecipeFactory extends Factory
             'created_by_user_id' => User::factory(),
             'title' => fake()->words(3, true),
             'description' => fake()->optional()->paragraph(),
+            'image_path' => null,
             'servings' => fake()->numberBetween(1, 8),
             'before_cooking_minutes' => fake()->numberBetween(0, 60),
             'cooking_minutes' => fake()->numberBetween(0, 180),

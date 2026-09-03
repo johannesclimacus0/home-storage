@@ -2,6 +2,8 @@
 
 namespace App\DTO\Recipes;
 
+use Illuminate\Http\UploadedFile;
+
 final readonly class CreateRecipeData
 {
     public function __construct(
@@ -10,6 +12,7 @@ final readonly class CreateRecipeData
         public ?string $description,
         public int $servings,
         public int $beforeCookingMinutes,
-        public int $cookingMinutes
+        public int $cookingMinutes,
+        public ?UploadedFile $image
     ) {}
 }

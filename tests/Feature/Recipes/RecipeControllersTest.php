@@ -8,6 +8,8 @@ use App\Models\RecipeIngredient;
 use App\Models\RecipeStep;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class RecipeControllersTest extends TestCase
@@ -90,6 +92,117 @@ class RecipeControllersTest extends TestCase
             ->assertNoContent();
 
         $this->assertDatabaseMissing('recipes', ['id' => $recipe->getKey()]);
+    }
+
+    public function test_recipe_owner_can_upload_replace_and_remove_image(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $createResponse = $this->actingAs($user)->post('/api/recipes', [
+            'title' => 'Recipe with image',
+            'description' => null,
+            'servings' => 2,
+            'before_cooking_minutes' => 10,
+            'cooking_minutes' => 20,
+            'image' => UploadedFile::fake()->image('first.jpg'),
+        ], ['Accept' => 'application/json']);
+
+        $createResponse
+            ->assertCreated()
+            ->assertJsonPath('data.title', 'Recipe with image')
+            ->assertJsonPath('data.image_url', fn ($url) => is_string($url));
+
+        $recipe = Recipe::query()
+            ->where('uuid', $createResponse->json('data.uuid'))
+            ->firstOrFail();
+        $firstPath = $recipe->image_path;
+
+        $this->assertNotNull($firstPath);
+        Storage::disk('public')->assertExists($firstPath);
+
+        $updateResponse = $this->actingAs($user)->post("/api/recipes/{$recipe->uuid}", [
+            '_method' => 'PUT',
+            'title' => 'Recipe with new image',
+            'description' => null,
+            'servings' => 4,
+            'before_cooking_minutes' => 15,
+            'cooking_minutes' => 30,
+            'remove_image' => false,
+            'image' => UploadedFile::fake()->image('second.webp'),
+        ], ['Accept' => 'application/json']);
+
+        $updateResponse
+            ->assertOk()
+            ->assertJsonPath('data.title', 'Recipe with new image')
+            ->assertJsonPath('data.image_url', fn ($url) => is_string($url));
+
+        $secondPath = $recipe->refresh()->image_path;
+
+        $this->assertNotNull($secondPath);
+        $this->assertNotSame($firstPath, $secondPath);
+        Storage::disk('public')->assertMissing($firstPath);
+        Storage::disk('public')->assertExists($secondPath);
+
+        $this->actingAs($user)->post("/api/recipes/{$recipe->uuid}", [
+            '_method' => 'PUT',
+            'title' => 'Recipe without image',
+            'description' => null,
+            'servings' => 4,
+            'before_cooking_minutes' => 15,
+            'cooking_minutes' => 30,
+            'remove_image' => true,
+        ], ['Accept' => 'application/json'])
+            ->assertOk()
+            ->assertJsonPath('data.image_url', null);
+
+        $this->assertNull($recipe->refresh()->image_path);
+        Storage::disk('public')->assertMissing($secondPath);
+    }
+
+    public function test_deleting_recipe_also_deletes_its_image(): void
+    {
+        Storage::fake('public');
+        $path = Storage::disk('public')->putFile(
+            'recipes',
+            UploadedFile::fake()->image('recipe.jpg')
+        );
+        $recipe = Recipe::factory()->create(['image_path' => $path]);
+
+        $this->actingAs($recipe->creator)
+            ->deleteJson("/api/recipes/{$recipe->uuid}")
+            ->assertNoContent();
+
+        Storage::disk('public')->assertMissing($path);
+    }
+
+    public function test_recipe_image_must_be_a_supported_image_under_five_megabytes(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->post('/api/recipes', [
+            'title' => 'Invalid image recipe',
+            'description' => null,
+            'servings' => 2,
+            'before_cooking_minutes' => 10,
+            'cooking_minutes' => 20,
+            'image' => UploadedFile::fake()->create('document.pdf', 100, 'application/pdf'),
+        ], ['Accept' => 'application/json'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('image');
+
+        $this->actingAs($user)->post('/api/recipes', [
+            'title' => 'Oversized image recipe',
+            'description' => null,
+            'servings' => 2,
+            'before_cooking_minutes' => 10,
+            'cooking_minutes' => 20,
+            'image' => UploadedFile::fake()->image('large.jpg')->size(5121),
+        ], ['Accept' => 'application/json'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('image');
+
+        $this->assertDatabaseCount('recipes', 0);
     }
 
     public function test_recipe_request_validation_is_returned_as_json(): void
