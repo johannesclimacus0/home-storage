@@ -16,5 +16,6 @@ Route::view('/history', 'app');
 Route::view('/catalog', 'app');
 Route::view('/households', 'app');
 Route::view('/notifications', 'app');
+Route::view('/profile', 'app');
 Route::view('/chat', 'app');
 Route::view('/recipes/{path?}', 'app')->where('path', '.*');

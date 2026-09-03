@@ -2,15 +2,21 @@
 
 namespace App\Notifications\Inventory;
 
+use App\Contracts\Notifications\SendsTelegramNotification;
 use App\Enums\MeasurementType;
+use App\Enums\TelegramNotificationType;
+use App\Notifications\Concerns\RoutesTelegramNotifications;
+use App\Support\Telegram\TelegramMarkdown;
 use Carbon\CarbonImmutable;
+use DefStudio\Telegraph\Notifications\TelegraphMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class ProductLowStockNotification extends Notification implements ShouldQueue
+class ProductLowStockNotification extends Notification implements SendsTelegramNotification, ShouldQueue
 {
     use Queueable;
+    use RoutesTelegramNotifications;
 
     public int $tries = 3;
 
@@ -38,7 +44,7 @@ class ProductLowStockNotification extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['database', 'broadcast'];
+        return $this->withTelegramChannel($notifiable, ['database', 'broadcast']);
     }
 
     public function toArray(object $notifiable): array
@@ -53,5 +59,21 @@ class ProductLowStockNotification extends Notification implements ShouldQueue
             'threshold' => $this->threshold,
             'became_low_at' => $this->becameLowAt->toIso8601String(),
         ];
+    }
+
+    public function telegramType(): TelegramNotificationType
+    {
+        return TelegramNotificationType::LowStock;
+    }
+
+    public function toTelegram(object $notifiable): TelegraphMessage
+    {
+        $message = '*Заканчивается продукт*' . "\n\n"
+            . '*' . TelegramMarkdown::escape($this->productName) . '*' . "\n"
+            . 'Дом: ' . TelegramMarkdown::escape($this->householdName) . "\n"
+            . 'Осталось: ' . TelegramMarkdown::escape($this->totalQuantity) . "\n"
+            . 'Порог: ' . TelegramMarkdown::escape($this->threshold);
+
+        return TelegraphMessage::make($message)->markdownV2();
     }
 }

@@ -18,6 +18,8 @@ use App\Http\Controllers\Api\StockMovementController;
 use App\Http\Controllers\Api\StorageLocationController;
 use App\Http\Controllers\Api\TelegramConnectionController;
 use App\Http\Controllers\Api\TelegramLinkController;
+use App\Http\Controllers\Api\TelegramReminderController;
+use App\Http\Controllers\Api\TelegramSubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -107,5 +109,15 @@ Route::middleware(['auth:sanctum', 'verified', 'throttle:authenticated-api'])->g
 
     Route::get('/telegram/connection', [TelegramConnectionController::class, 'show']);
     Route::post('/telegram/link', [TelegramLinkController::class, 'store'])
+        ->middleware('throttle:write-operations');
+    Route::get('/telegram/subscriptions', [TelegramSubscriptionController::class, 'index']);
+    Route::put('/telegram/subscriptions', [TelegramSubscriptionController::class, 'update'])
+        ->middleware('throttle:write-operations');
+    Route::get('/telegram/reminders', [TelegramReminderController::class, 'index']);
+    Route::post('/telegram/reminders', [TelegramReminderController::class, 'store'])
+        ->middleware('throttle:write-operations');
+    Route::patch('/telegram/reminders/{reminder}', [TelegramReminderController::class, 'update'])
+        ->middleware('throttle:write-operations');
+    Route::delete('/telegram/reminders/{reminder}', [TelegramReminderController::class, 'destroy'])
         ->middleware('throttle:write-operations');
 });
