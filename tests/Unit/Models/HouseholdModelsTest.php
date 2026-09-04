@@ -47,7 +47,7 @@ class HouseholdModelsTest extends TestCase
     {
         $user = new User;
 
-        $this->assertSame(['name', 'email', 'password'], $user->getFillable());
+        $this->assertSame(['name', 'email', 'timezone','password'], $user->getFillable());
         $this->assertInstanceOf(HasMany::class, $user->householdMemberships());
     }
 }

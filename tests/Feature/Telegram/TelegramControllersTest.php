@@ -72,6 +72,7 @@ class TelegramControllersTest extends TestCase
             ->assertOk()
             ->assertJsonPath('connected', true)
             ->assertJsonPath('chat_name', 'Test chat')
+            ->assertJsonPath('timezone', 'UTC')
             ->assertJsonPath('linked_at', fn (mixed $value): bool => is_string($value));
     }
 
@@ -82,11 +83,23 @@ class TelegramControllersTest extends TestCase
         $this->actingAs($user)
             ->getJson('/api/telegram/connection')
             ->assertOk()
-            ->assertExactJson([
-                'connected' => false,
-                'linked_at' => null,
-                'chat_name' => null,
-            ]);
+            ->assertJsonPath('connected', false)
+            ->assertJsonPath('linked_at', null)
+            ->assertJsonPath('chat_name', null)
+            ->assertJsonPath('timezone', 'UTC')
+            ->assertJsonPath('timezones', fn (mixed $value): bool => is_array($value) && in_array('Europe/Moscow', $value, true));
+    }
+
+    public function test_verified_user_can_update_their_timezone(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->patchJson('/api/telegram/timezone', ['timezone' => 'Australia/Sydney'])
+            ->assertOk()
+            ->assertJsonPath('timezone', 'Australia/Sydney');
+
+        $this->assertSame('Australia/Sydney', $user->refresh()->timezone);
     }
 
     public function test_guest_cannot_access_telegram_endpoints(): void

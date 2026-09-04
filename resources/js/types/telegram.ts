@@ -2,6 +2,8 @@ export interface TelegramConnectionStatus {
     connected: boolean
     linked_at: string | null
     chat_name: string | null
+    timezone: string
+    timezones: string[]
 }
 
 export interface TelegramLinkResponse {

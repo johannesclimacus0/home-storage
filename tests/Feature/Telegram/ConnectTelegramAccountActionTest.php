@@ -6,7 +6,6 @@ use App\Actions\Telegram\ConnectTelegramAccountAction;
 use App\Actions\Telegram\CreateTelegramLinkAction;
 use App\Exceptions\Telegram\InvalidTelegramLinkException;
 use App\Exceptions\Telegram\TelegramChatAlreadyConnectedException;
-use App\Models\TelegramConnection;
 use App\Models\User;
 use DefStudio\Telegraph\Models\TelegraphBot;
 use DefStudio\Telegraph\Models\TelegraphChat;

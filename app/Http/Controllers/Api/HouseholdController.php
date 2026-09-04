@@ -174,4 +174,5 @@ class HouseholdController extends Controller
             ],
         ], Response::HTTP_OK);
     }
+     
 }

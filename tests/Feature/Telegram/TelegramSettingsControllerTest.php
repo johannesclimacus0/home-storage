@@ -33,6 +33,18 @@ class TelegramSettingsControllerTest extends TestCase
             'user_id' => $user->getKey(),
             'type' => 'low_stock',
         ]);
+
+        $this->actingAs($user)
+            ->putJson('/api/telegram/subscriptions', [
+                'subscriptions' => [],
+            ])
+            ->assertOk()
+            ->assertJsonPath('data.0.enabled', false);
+
+        $this->assertDatabaseMissing('telegram_notification_subscriptions', [
+            'user_id' => $user->getKey(),
+            'type' => 'low_stock',
+        ]);
     }
 
     public function test_user_can_create_and_delete_own_reminder(): void

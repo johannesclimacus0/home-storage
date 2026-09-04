@@ -16,7 +16,7 @@ final class UpdateTelegramSubscriptionsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'subscriptions' => 'required|array',
+            'subscriptions' => 'present|array',
             'subscriptions.*' => ['required', 'string', Rule::enum(TelegramNotificationType::class)],
         ];
     }

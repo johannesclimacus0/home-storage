@@ -49,7 +49,7 @@ class TelegramDeliveryTest extends TestCase
 
         app(TelegramChannel::class)->send($user, $notification);
 
-        $telegraph->assertSent('*Напоминание*' . "\n\n" . 'Milk \\(2%\\)');
+        $telegraph->assertSent('*Silly reminder:*' . "\n" . 'Milk \\(2%\\)');
     }
 
     public function test_due_reminder_is_queued_and_marked_as_dispatched(): void

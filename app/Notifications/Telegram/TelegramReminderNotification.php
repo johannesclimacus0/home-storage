@@ -37,7 +37,7 @@ final class TelegramReminderNotification extends Notification implements SendsTe
     public function toTelegram(object $notifiable): TelegraphMessage
     {
         return TelegraphMessage::make(
-            '*Напоминание*' . "\n\n" . TelegramMarkdown::escape($this->message)
+            '*Silly reminder:*' . "\n" . TelegramMarkdown::escape($this->message)
         )->markdownV2();
     }
 }

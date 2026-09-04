@@ -108,6 +108,10 @@ Route::middleware(['auth:sanctum', 'verified', 'throttle:authenticated-api'])->g
         ->middleware('throttle:write-operations');
 
     Route::get('/telegram/connection', [TelegramConnectionController::class, 'show']);
+    Route::delete('/telegram/connection', [TelegramConnectionController::class, 'destroy'])
+        ->middleware('throttle:write-operations');
+    Route::patch('/telegram/timezone', [TelegramConnectionController::class, 'updateTimezone'])
+        ->middleware('throttle:write-operations');
     Route::post('/telegram/link', [TelegramLinkController::class, 'store'])
         ->middleware('throttle:write-operations');
     Route::get('/telegram/subscriptions', [TelegramSubscriptionController::class, 'index']);
